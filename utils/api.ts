@@ -1,9 +1,10 @@
 import axios from "axios";
+
 import { GetArtists, GetTopics } from "../types";
 import { SearchResult, VideoResponse } from "../types/invidious";
 
 const invidious = axios.create({
-  baseURL: 'https://onion.tube',
+  baseURL: "https://onion.tube",
 });
 
 export const getVideoInfo = async (videoId: string) => {
@@ -18,7 +19,7 @@ export const getVideoInfo = async (videoId: string) => {
 export const getSearchResult = async ({
   q,
   page = 0,
-  region = "VN",
+  region = "TH",
   type = "video",
   fields = "title,videoId,author,videoThumbnails",
 }) => {

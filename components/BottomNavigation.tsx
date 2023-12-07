@@ -1,35 +1,47 @@
 import {
-  MagnifyingGlassIcon,
+  ArrowRightOnRectangleIcon,
+  ChatBubbleLeftIcon,
   MusicalNoteIcon,
-  RectangleStackIcon,
-} from "@heroicons/react/20/solid";
+  UserGroupIcon,
+} from "@heroicons/react/24/outline";
+
+import { useAuth } from "../context/AuthContext";
 import { useKaraokeState } from "../hooks/karaoke";
 
 export default function BottomNavigation() {
   const { activeIndex, setActiveIndex } = useKaraokeState();
+  const { logOut } = useAuth();
+
   return (
     <div className="btm-nav static flex-shrink-0">
       <button
-        className={`text-primary ${activeIndex === 0 ? "active" : ""}`}
-        onClick={() => setActiveIndex(0)}
+        className={`text-primary shrink ${activeIndex === 1 ? "active" : ""}`}
+        onClick={() => setActiveIndex(1)}
       >
-       
-        <span className="btm-nav-label">ค้นหา</span>
+        <MusicalNoteIcon className="w-6 h-6" />
+        <span className="btm-nav-label">ศิลปิน</span>
       </button>
-      <button
-       className={`text-primary ${activeIndex === 0 ? "active" : ""}`}
-       onClick={() => setActiveIndex(0)}
+      <a
+        className={`text-primary shrink`}
+        href="https://party.okeforyou.com/"
+        target="_blank"
+        rel="noopener"
       >
-       
-        <a href="https://party.okeforyou.com/" target="_blank" rel="noopener">โหมด Party</a>
-      </button>
-      
-      <button
-        className={`text-primary ${activeIndex === 0 ? "active" : ""}`}
-        onClick={() => setActiveIndex(0)}
+        <UserGroupIcon className="w-6 h-6" />
+        โหมด Party
+      </a>
+
+      <a
+        className={`text-primary shrink`}
+        href="https://okeforyou.com/contact/"
+        target="_blank"
+        rel="noopener"
       >
-        
-        <a href="https://okeforyou.com/contact/" target="_blank" rel="noopener">ติดต่อ Line</a>
+        <ChatBubbleLeftIcon className="w-6 h-6" />
+        ติดต่อ Line
+      </a>
+      <button className={`text-gray-500 flex-none  w-10 h-8`} onClick={logOut}>
+        <ArrowRightOnRectangleIcon className="w-5 h-5" />
       </button>
     </div>
   );
