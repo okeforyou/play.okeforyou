@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { Fragment } from "react";
 import { useQuery } from "react-query";
+
+import { useKaraokeState } from "../hooks/karaoke";
 import { RecommendedVideo, SearchResult } from "../types/invidious";
 import { getSearchResult, getSkeletonItems, getVideoInfo } from "../utils/api";
-import { useKaraokeState } from "../hooks/karaoke";
 
 export default function SearchResultGrid({
   onClick = () => {},
@@ -15,7 +16,11 @@ export default function SearchResultGrid({
 
   const titleIncludesKaraoke = ({ title }) => {
     const lcTitle = title.toLowerCase();
-    return lcTitle.includes("karaoke") || lcTitle.includes("beat");
+    return (
+      lcTitle.includes("karaoke") ||
+      lcTitle.includes("beat") ||
+      lcTitle.includes("คาราโอเกะ")
+    );
   };
 
   const { data: recommendedVideos, isLoading: infoLoading } = useQuery(

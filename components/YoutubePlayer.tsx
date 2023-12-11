@@ -1,3 +1,9 @@
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useFullscreen, usePromise, useToggle } from "react-use";
+import YouTube, { YouTubePlayer } from "react-youtube";
+
 import {
   ArrowUturnLeftIcon,
   ForwardIcon,
@@ -6,10 +12,8 @@ import {
   SpeakerWaveIcon,
   SpeakerXMarkIcon,
 } from "@heroicons/react/20/solid";
-import Image from "next/image";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useFullscreen, usePromise, useToggle } from "react-use";
-import YouTube, { YouTubePlayer } from "react-youtube";
+
+import { useAuth } from "../context/AuthContext";
 
 function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
   const playerRef = useRef<YouTube>();
@@ -19,6 +23,8 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
     onClose: () => toggleFullscreen(false),
   });
   const [playerState, setPlayerState] = useState<number>();
+  const { user } = useAuth();
+  const router = useRouter();
 
   const [isMuted, setIsMuted] = useState(false);
   const mounted = usePromise();
@@ -33,6 +39,11 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
     if (playerState.status === "fulfilled") setPlayerState(playerState.value);
   }
 
+  const checkLogin = () => {
+    if (!user.uid) {
+      router.push("/login");
+    }
+  };
   useEffect(() => {
     const player = playerRef.current?.getInternalPlayer();
     if (player) updatePlayerState(player);
@@ -59,6 +70,7 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
             icon: PlayIcon,
             label: "เล่น",
             onClick: async () => {
+              checkLogin();
               try {
                 const player = playerRef.current?.getInternalPlayer();
                 if (!player) return;
@@ -107,17 +119,21 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
     [isMuted]
   );
 
-  const playerBtns = useMemo(
+  const playerBtns: any = useMemo(
     () => [
       {
         icon: ForwardIcon,
         label: "เพลงถัดไป",
-        onClick: nextSong,
+        onClick: () => {
+          checkLogin();
+          nextSong();
+        },
       },
       {
         icon: ArrowUturnLeftIcon,
         label: "ร้องอีกครั้ง",
         onClick: async () => {
+          checkLogin();
           try {
             const player = playerRef.current?.getInternalPlayer();
             if (!player) return;
@@ -165,7 +181,7 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
             loading="lazy"
             opts={{
               playerVars: {
-                autoplay: 1,
+                autoplay: 0,
                 controls: 0,
                 disablekb: 1,
                 enablejsapi: 1,
@@ -182,10 +198,10 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
         {playPauseBtn.concat(playerBtns, muteBtn).map((btn) => (
           <button
             key={btn.label}
-            className="btn btn-ghost text-primary flex h-auto flex-col flex-1 overflow-hidden text-[10px] 2xl:text-lg p-0 hover:bg-base-200"
+            className="btn btn-ghost font-normal text-primary flex h-auto flex-col flex-1 overflow-hidden  text-sm 2xl:text-lg p-0 hover:bg-base-200"
             onClick={btn.onClick}
           >
-            <btn.icon className="w-10 h-10" />
+            <btn.icon className="w-8 h-8 2xl:w-10 2xl:h-10" />
             {btn.label}
           </button>
         ))}

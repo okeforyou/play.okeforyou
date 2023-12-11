@@ -34,6 +34,11 @@ export const getSearchResult = async ({
 export const getSkeletonItems = (length: number) =>
   Array.from({ length }).map((_, i) => i);
 
+export const getTopArtists = async () => {
+  const res = await axios.get<GetArtists>("/api/artists/");
+  return res.data;
+};
+
 export const getArtists = async (gender: number = 1) => {
   const res = await axios.get<GetArtists>("/api/artists/" + gender);
   return res.data;

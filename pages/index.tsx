@@ -6,11 +6,9 @@ import { DebounceInput } from "react-debounce-input";
 import { ListBulletIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 
 import BottomNavigation from "../components/BottomNavigation";
-import ProtectedRoute from "../components/ProtectedRoute";
 import SearchResultGrid from "../components/SearchResultGrid";
 import VideoHorizontalCard from "../components/VideoHorizontalCard";
 import YoutubePlayer from "../components/YoutubePlayer";
-import { useAuth } from "../context/AuthContext";
 import { useKaraokeState } from "../hooks/karaoke";
 import { RecommendedVideo, SearchResult } from "../types/invidious";
 
@@ -38,7 +36,6 @@ function HomePage() {
   const [selectedVideo, setSelectedVideo] = useState<
     SearchResult | RecommendedVideo
   >();
-  const { user } = useAuth();
 
   useEffect(() => {
     if (playlist?.length && !curVideoId) {
@@ -126,168 +123,166 @@ function HomePage() {
   );
 
   return (
-    <ProtectedRoute>
-      <div className="text-sm 2xl:text-xl w-full max-h-screen overflow-hidden">
-        <main className="bg-base-300 h-full">
-          <div className="relative flex flex-col sm:flex-row h-screen overflow-hidden">
-            {/* START Recommend Videos List */}
-            <div className="order-2 sm:order-1 flex flex-col h-full w-full overflow-hidden">
-              <div className="flex flex-col h-full overflow-hidden">
-                {/* START Search Bar */}
-                <div className="flex flex-row gap-2 p-1 justify-between items-center bg-primary">
-                  {/* START Search Input */}
-                  <div className="form-control flex-1">
-                    <div className="input-group">
-                      <span className="px-2 sm:px-4">
-                        <MagnifyingGlassIcon className="w-6 h-6" />
-                      </span>
-                      <DebounceInput
-                        type="search"
-                        placeholder="ค้นหาเพลง"
-                        className="input w-full appearance-none rounded-l xl:text-xl"
-                        value={searchTerm}
-                        debounceTimeout={1000}
-                        onChange={(ev) => setSearchTerm(ev.target.value)}
-                        inputMode="search"
-                      />
-                    </div>
+    <div className="text-sm 2xl:text-xl w-full max-h-screen overflow-hidden">
+      <main className="bg-base-300 h-full">
+        <div className="relative flex flex-col sm:flex-row h-screen overflow-hidden">
+          {/* START Recommend Videos List */}
+          <div className="order-2 sm:order-1 flex flex-col h-full w-full overflow-hidden">
+            <div className="flex flex-col h-full overflow-hidden">
+              {/* START Search Bar */}
+              <div className="flex flex-row gap-2 p-1 justify-between items-center bg-primary">
+                {/* START Search Input */}
+                <div className="form-control flex-1">
+                  <div className="input-group">
+                    <span className="px-2 sm:px-4">
+                      <MagnifyingGlassIcon className="w-6 h-6" />
+                    </span>
+                    <DebounceInput
+                      type="search"
+                      placeholder="ค้นหาเพลง"
+                      className="input w-full appearance-none rounded-l xl:text-xl"
+                      value={searchTerm}
+                      debounceTimeout={1000}
+                      onChange={(ev) => setSearchTerm(ev.target.value)}
+                      inputMode="search"
+                    />
                   </div>
-                  {/* END Search Input */}
-                  {/* START Karaoke Switch */}
-                  <div className="form-control">
-                    <label className="cursor-pointer label flex-col lg:flex-row gap-1">
-                      <input
-                        type="checkbox"
-                        className="toggle toggle-success toggle-sm"
-                        checked={isKaraoke}
-                        onChange={(e) => setIsKaraoke(e.target.checked)}
-                      />
-                      <span className="label-text text-primary-content ml-2 text-xs 2xl:text-xl">
-                        KARAOKE
-                      </span>
-                    </label>
-                  </div>
-                  {/* END Karaoke Switch */}
-                  <label
-                    htmlFor="modal-playlist"
-                    className="btn btn-ghost text-primary-content flex-col gap-1 w-20 p-0 sm:hidden"
-                  >
-                    <div className="relative">
-                      <ListBulletIcon className="h-6 w-6" />
-                      <span className="badge absolute -top-2 -right-2 text-xs p-1">
-                        {playlist?.length || 0}
-                      </span>
-                    </div>
-                    <span className="text-[10px] leading-none">คิวเพลง</span>
+                </div>
+                {/* END Search Input */}
+                {/* START Karaoke Switch */}
+                <div className="form-control">
+                  <label className="cursor-pointer label flex-col lg:flex-row gap-1">
+                    <input
+                      type="checkbox"
+                      className="toggle toggle-primary toggle-sm"
+                      checked={isKaraoke}
+                      onChange={(e) => setIsKaraoke(e.target.checked)}
+                    />
+                    <span className="label-text text-primary-content ml-2 text-xs 2xl:text-xl">
+                      KARAOKE
+                    </span>
                   </label>
                 </div>
-                {/* END Search Bar */}
-                {/* Recommend Videos List */}
-                <div
-                  className={`relative grid grid-cols-2 xl:grid-cols-3 auto-rows-min gap-2 w-full overflow-y-auto max-h-full p-2 ${scrollbarCls}`}
-                >
-                  {/* START Video Row Item */}
-
-                  {
-                    [
-                      <SearchResultGrid
-                        key={0}
-                        onClick={(video) => setSelectedVideo(video)}
-                      />,
-                      <ListSingerGrid key={1} />,
-                      <ListTopicsGrid key={2} />,
-                    ][activeIndex]
-                  }
-
-                  {/* END Video Row Item */}
-                </div>
-                {/* Put this part before </body> tag */}
-                <input
-                  type="checkbox"
-                  id="modal-playlist"
-                  className="modal-toggle"
-                />
+                {/* END Karaoke Switch */}
                 <label
                   htmlFor="modal-playlist"
-                  className="modal modal-bottom sm:modal-middle cursor-pointer"
+                  className="btn btn-ghost text-primary-content flex-col gap-1 w-20 p-0 sm:hidden"
                 >
-                  <label
-                    className="flex flex-col modal-box max-h-[50%] overflow-hidden bg-base-300 p-2"
-                    htmlFor=""
-                  >
-                    <div className="relative h-full overflow-y-auto flex flex-col">
-                      {PlaylistScreen}
-                    </div>
-                  </label>
+                  <div className="relative">
+                    <ListBulletIcon className="h-6 w-6" />
+                    <span className="badge absolute -top-2 -right-2 text-xs p-1">
+                      {playlist?.length || 0}
+                    </span>
+                  </div>
+                  <span className="text-[10px] leading-none">คิวเพลง</span>
                 </label>
-                <input
-                  type="checkbox"
-                  id="modal-video"
-                  className="modal-toggle"
-                />
+              </div>
+              {/* END Search Bar */}
+              {/* Recommend Videos List */}
+              <div
+                className={`relative grid grid-cols-2 xl:grid-cols-3 auto-rows-min gap-2 w-full overflow-y-auto max-h-full p-2 ${scrollbarCls}`}
+              >
+                {/* START Video Row Item */}
+
+                {
+                  [
+                    <SearchResultGrid
+                      key={0}
+                      onClick={(video) => setSelectedVideo(video)}
+                    />,
+                    <ListSingerGrid key={1} />,
+                    <ListTopicsGrid key={2} />,
+                  ][activeIndex]
+                }
+
+                {/* END Video Row Item */}
+              </div>
+              {/* Put this part before </body> tag */}
+              <input
+                type="checkbox"
+                id="modal-playlist"
+                className="modal-toggle"
+              />
+              <label
+                htmlFor="modal-playlist"
+                className="modal modal-bottom sm:modal-middle cursor-pointer"
+              >
                 <label
-                  htmlFor="modal-video"
-                  className="modal modal-bottom sm:modal-middle cursor-pointer"
+                  className="flex flex-col modal-box max-h-[50%] overflow-hidden bg-base-300 p-2"
+                  htmlFor=""
                 >
-                  <label
-                    className="modal-box relative px-2 py-4 pb-12 sm:p-4"
-                    htmlFor=""
-                  >
-                    <div className="card gap-2">
-                      <h2 className="card-title text-sm 2xl:text-2xl">
-                        {selectedVideo?.title}
-                      </h2>
-                      <figure className="relative w-full aspect-video">
-                        <Image
-                          unoptimized
-                          src={`https://invidious.io.lol/vi/${selectedVideo?.videoId}/mqdefault.jpg`}
-                          priority
-                          alt={selectedVideo?.title}
-                          layout="fill"
-                          className="bg-gray-400"
-                        />
-                      </figure>
-                      <div className="card-body p-0">
-                        <div className="card-actions">
-                          <label
-                            htmlFor="modal-video"
-                            className="btn btn-primary flex-1 2xl:text-2xl"
-                            onClick={() => addVideoToPlaylist(selectedVideo)}
-                          >
-                            เลือก
-                          </label>
-                          <label
-                            htmlFor="modal-video"
-                            className="btn btn-primary flex-1 2xl:text-2xl"
-                            onClick={() => priorityVideo(selectedVideo)}
-                          >
-                            เลือกเป็นคิวแรก
-                          </label>
-                        </div>
+                  <div className="relative h-full overflow-y-auto flex flex-col">
+                    {PlaylistScreen}
+                  </div>
+                </label>
+              </label>
+              <input
+                type="checkbox"
+                id="modal-video"
+                className="modal-toggle"
+              />
+              <label
+                htmlFor="modal-video"
+                className="modal modal-bottom sm:modal-middle cursor-pointer"
+              >
+                <label
+                  className="modal-box relative px-2 py-4 pb-12 sm:p-4"
+                  htmlFor=""
+                >
+                  <div className="card gap-2">
+                    <h2 className="card-title text-sm 2xl:text-2xl">
+                      {selectedVideo?.title}
+                    </h2>
+                    <figure className="relative w-full aspect-video">
+                      <Image
+                        unoptimized
+                        src={`https://invidious.io.lol/vi/${selectedVideo?.videoId}/mqdefault.jpg`}
+                        priority
+                        alt={selectedVideo?.title}
+                        layout="fill"
+                        className="bg-gray-400"
+                      />
+                    </figure>
+                    <div className="card-body p-0">
+                      <div className="card-actions">
+                        <label
+                          htmlFor="modal-video"
+                          className="btn btn-primary flex-1 2xl:text-2xl"
+                          onClick={() => addVideoToPlaylist(selectedVideo)}
+                        >
+                          เลือก
+                        </label>
+                        <label
+                          htmlFor="modal-video"
+                          className="btn btn-primary flex-1 2xl:text-2xl"
+                          onClick={() => priorityVideo(selectedVideo)}
+                        >
+                          เลือกเป็นคิวแรก
+                        </label>
                       </div>
                     </div>
-                  </label>
+                  </div>
                 </label>
-              </div>
-
-              <BottomNavigation />
+              </label>
             </div>
-            {/* END Recommend Videos List */}
-            {/* Video Player */}
-            <div className="relative order-1 sm:order-2 w-full flex flex-row sm:flex-col flex-grow flex-shrink-0 sm:max-w-[50vw] lg:max-w-[50vw] 2xl:max-w-[50vw] sm:min-w-[400px] sm:h-screen overflow-hidden">
-              <YoutubePlayer
-                videoId={curVideoId}
-                nextSong={() => setCurVideoId("")}
-                className="flex flex-col flex-1 sm:flex-grow-0"
-              />
-              <div className="max-h-full w-full p-2 overflow-hidden hidden sm:flex flex-col">
-                {PlaylistScreen}
-              </div>
+
+            <BottomNavigation />
+          </div>
+          {/* END Recommend Videos List */}
+          {/* Video Player */}
+          <div className="relative order-1 sm:order-2 w-full flex flex-row sm:flex-col flex-grow flex-shrink-0 sm:max-w-[50vw] lg:max-w-[50vw] 2xl:max-w-[50vw] sm:min-w-[400px] sm:h-screen overflow-hidden">
+            <YoutubePlayer
+              videoId={curVideoId}
+              nextSong={() => setCurVideoId("")}
+              className="flex flex-col flex-1 sm:flex-grow-0"
+            />
+            <div className="max-h-full w-full p-2 overflow-hidden hidden sm:flex flex-col">
+              {PlaylistScreen}
             </div>
           </div>
-        </main>
-      </div>
-    </ProtectedRoute>
+        </div>
+      </main>
+    </div>
   );
 }
 

@@ -3,34 +3,42 @@ import axios from "axios";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 
+//https://www.joox.com/th/artists
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   try {
-    let songList = [];
+    let artistList = [];
+    let artistCategories = [];
 
-    const jooxData = await axios.get(`https://www.joox.com/th/chart/46`);
+    const jooxData = await axios.get(`https://www.joox.com/th/artists`);
     try {
       var match = jooxData.data.match(
         /(?<=<script id="__NEXT_DATA__" type="application\/json">)(.*?)(?=<\/script>)/
       );
       const jsonData = JSON.parse(match[0]);
-      songList = jsonData.props.pageProps.trackList.tracks.items;
+      artistList = jsonData.props.pageProps.artistList;
+      const artistCategoriesData = jsonData.props.pageProps.artistCategories;
+
+      artistCategories = artistCategoriesData.categories.reduce((acc, cur) => {
+        return [...acc, ...cur.tag_list];
+      }, []);
     } catch (error) {
       console.log(error);
     }
 
-    const topics = {
+    const artists = {
       status: "success",
-      topic: songList.map((a) => ({
-        title: a.name,
-        artist_name: a.artist_list[0].name,
-        coverImageURL: a.images[0].url,
+      artist: artistList.map((a) => ({
+        name: a.name,
+        imageUrl: a.image,
       })),
+      artistCategories,
     };
 
-    res.status(200).json(topics);
+    res.status(200).json(artists);
   } catch (error) {
     res.status(500).json(error);
   }

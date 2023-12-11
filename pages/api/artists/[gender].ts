@@ -11,20 +11,15 @@ export default async function handler(
 ) {
   try {
     let { gender } = req.query;
-    const genderTagConfig = {
-      "1": 193,
-      "2": 195,
-      "3": 197,
-    };
     if (Array.isArray(gender)) gender = gender[0];
 
-    const tag = genderTagConfig[gender];
+    const tag = gender;
 
-    const male = await axios.get(
+    const jooxTagData = await axios.get(
       `https://api-jooxtt.sanook.com/openjoox/v1/tag/${tag}/artists?country=th&lang=th&index=0&num=36`
     );
 
-    const data = male?.data?.artists?.items;
+    const data = jooxTagData?.data?.artists?.items;
 
     const artists = {
       status: "success",
