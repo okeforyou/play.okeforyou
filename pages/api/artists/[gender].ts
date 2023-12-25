@@ -16,7 +16,7 @@ export default async function handler(
     const tag = gender;
 
     const jooxTagData = await axios.get(
-      `https://api-jooxtt.sanook.com/openjoox/v1/tag/${tag}/artists?country=th&lang=th&index=0&num=36`
+      `https://api-jooxtt.sanook.com/openjoox/v1/tag/${tag}/artists?country=th&lang=th&index=0&num=50`
     );
 
     const data = jooxTagData?.data?.artists?.items;

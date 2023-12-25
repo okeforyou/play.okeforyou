@@ -1,12 +1,12 @@
-import "../styles/global.css";
+import '../styles/global.css'
 
-import Head from "next/head";
-import Script from "next/script";
-import { QueryClient, QueryClientProvider } from "react-query";
+import Head from 'next/head'
+import Script from 'next/script'
+import { QueryClient, QueryClientProvider } from 'react-query'
 
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from '@vercel/analytics/react'
 
-import { AuthContextProvider } from "../context/AuthContext";
+import { AuthContextProvider } from '../context/AuthContext'
 
 // Create a client
 const queryClient = new QueryClient({
@@ -62,6 +62,7 @@ function App({ Component, pageProps }) {
           <link rel="icon" href="/favicon.ico" sizes="any" />
           <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
           <link rel="manifest" href="/manifest.json" />
+          <meta name="apple-mobile-web-app-capable" content="yes"></meta>
           <meta name="theme-color" content="#ef4444" />
           <meta name="robots" content="all" />
         </Head>

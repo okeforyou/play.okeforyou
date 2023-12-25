@@ -1,9 +1,9 @@
-import Image from "next/image";
-import { Fragment, useState } from "react";
-import { useQuery } from "react-query";
+import Image from 'next/image'
+import { Fragment, useState } from 'react'
+import { useQuery } from 'react-query'
 
-import { useKaraokeState } from "../hooks/karaoke";
-import { getArtists, getSkeletonItems, getTopArtists } from "../utils/api";
+import { useKaraokeState } from '../hooks/karaoke'
+import { getArtists, getSkeletonItems, getTopArtists } from '../utils/api'
 
 export default function ListSingerGrid() {
   const { data: topArtistsData, isLoading: isLoadTopArtists } = useQuery(
@@ -18,18 +18,32 @@ export default function ListSingerGrid() {
   const { setSearchTerm } = useKaraokeState();
   const { artist: topArtists } = topArtistsData || {};
   const { artist } = artists || {};
+  const { setActiveIndex } = useKaraokeState();
 
   return (
     <>
-      <div className="text-center text-2xl col-span-full pt-4">
-        ศิลปินยอดฮิต
+      <div className="col-span-full  bg-transparent pt-2">
+        <nav className="tabs tabs-boxed flex justify-center  bg-transparent">
+          <button type="button" className="tab tab-active">
+            ศิลปินยอดฮิต
+          </button>
+          <button
+            type="button"
+            className="tab"
+            onClick={() => {
+              setActiveIndex(2);
+            }}
+          >
+            เพลงฮิต
+          </button>
+        </nav>
       </div>
       <div
-        className={`relative grid grid-cols-4 xl:grid-cols-6  gap-4 col-span-full p-8 pt-4`}
+        className={`relative grid grid-cols-4 xl:grid-cols-6  gap-2 col-span-full pt-4 pb-4`}
       >
         {isLoadTopArtists && (
           <>
-            <div className="absolute inset-0 bg-gradient-to-t from-base-300 z-50" />
+            <div className="absolute inset-0 bg-gradient-to-t from-base-300 z-10" />
             {getSkeletonItems(16).map((s) => (
               <div
                 key={s}
@@ -42,7 +56,7 @@ export default function ListSingerGrid() {
           return (
             <Fragment key={artist.name}>
               <div
-                className="overflow-hidden bg-transparent   cursor-pointer flex-auto"
+                className="overflow-hidden bg-transparent cursor-pointer flex-auto"
                 onClick={() => {
                   setSearchTerm(artist.name);
                 }}
@@ -54,7 +68,7 @@ export default function ListSingerGrid() {
                     priority
                     alt={artist.name}
                     layout="fill"
-                    className="animate-pulse bg-gray-400 rounded-full"
+                    className="animate-pulse bg-gray-400 rounded-lg"
                     onLoad={(ev) =>
                       ev.currentTarget.classList.remove("animate-pulse")
                     }
@@ -76,7 +90,7 @@ export default function ListSingerGrid() {
 
       {!isLoadTopArtists && (
         <div
-          className={`tabs tabs-boxed col-span-full justify-center bg-transparent relative grid grid-cols-3 xl:grid-cols-5  gap-2 col-span-full`}
+          className={`tabs tabs-boxed col-span-full justify-center bg-transparent relative grid grid-cols-3 xl:grid-cols-5  gap-2 col-span-full p-0`}
         >
           {/* @ts-ignore */}
           {topArtistsData.artistCategories.map((cat) => {
@@ -88,18 +102,27 @@ export default function ListSingerGrid() {
               names.shift();
               lastword = names.join(" ");
             }
-
+            // Tag list
             return (
               <div
                 key={cat.tag_id}
-                className={`text-sm h-20 leading-6 hover:drop-shadow-xl hover:text-slate-200 tracking-wide text-white bg-slate-900 tab  ${
+                className={`text-sm h-20 leading-6 hover:drop-shadow-xl hover:text-slate-200 tracking-wide text-white bg-slate-900 tab bg-cover bg-no-repeat ${
                   gender == cat.tag_id ? "tab-active" : ""
-                }`}
+                }   
+                `}
                 onClick={() => setGender(cat.tag_id)}
+                style={{ backgroundImage: `url('${cat.image}')` }}
               >
-                {firstword}
-                <br />
-                {lastword}
+                <div
+                  className="absolute  top-0 h-full w-full bg-fixed items-center"
+                  style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
+                >
+                  <div className="flex h-full items-center justify-center">
+                    {firstword}
+                    <br />
+                    {lastword}
+                  </div>
+                </div>
               </div>
             );
           })}
@@ -107,7 +130,7 @@ export default function ListSingerGrid() {
       )}
       {isLoading && (
         <>
-          <div className="absolute inset-0 bg-gradient-to-t from-base-300 z-50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-base-300 z-10" />
           {getSkeletonItems(16).map((s) => (
             <div
               key={s}
@@ -116,40 +139,52 @@ export default function ListSingerGrid() {
           ))}
         </>
       )}
-      {artist?.map((artist) => {
-        return (
-          <Fragment key={artist.name}>
-            <div
-              className="card overflow-hidden bg-white shadow hover:shadow-md cursor-pointer flex-auto rounded-xl "
-              onClick={() => {
-                setSearchTerm(artist.name);
-              }}
-            >
-              <figure className="relative w-full aspect-square">
-                <Image
-                  unoptimized
-                  src={artist.imageUrl}
-                  priority
-                  alt={artist.name}
-                  layout="fill"
-                  className="animate-pulse bg-gray-400"
-                  onLoad={(ev) =>
-                    ev.currentTarget.classList.remove("animate-pulse")
-                  }
-                  onErrorCapture={(ev) => {
-                    ev.currentTarget.src = "/assets/avatar.jpeg";
-                  }}
-                />
-              </figure>
-              <div className="card-body p-2">
-                <h2 className="font-semibold  text-sm 2xl:text-2xl line-clamp-2 h-[2.7em]">
-                  {artist.name}
-                </h2>
+      <div className="col-span-full bg-transparent p-4 pb-2 pl-2 text-2xl">
+        {
+          //  @ts-ignore
+          (topArtistsData?.artistCategories || []).find(
+            (cat) => cat.tag_id === gender
+          )?.tag_name || "ศิลปินไทย ชายเดี่ยว"
+        }
+      </div>
+      <div
+        className={`tabs tabs-boxed col-span-full justify-center bg-transparent relative grid grid-cols-3 xl:grid-cols-5  gap-2 col-span-full p-0`}
+      >
+        {artist?.map((artist) => {
+          return (
+            <Fragment key={artist.name}>
+              <div
+                className="card overflow-hidden bg-white shadow hover:shadow-md cursor-pointer flex-auto rounded-lg"
+                onClick={() => {
+                  setSearchTerm(artist.name);
+                }}
+              >
+                <figure className="relative w-full aspect-square">
+                  <Image
+                    unoptimized
+                    src={artist.imageUrl}
+                    priority
+                    alt={artist.name}
+                    layout="fill"
+                    className="animate-pulse bg-gray-400"
+                    onLoad={(ev) =>
+                      ev.currentTarget.classList.remove("animate-pulse")
+                    }
+                    onErrorCapture={(ev) => {
+                      ev.currentTarget.src = "/assets/avatar.jpeg";
+                    }}
+                  />
+                </figure>
+                <div className="card-body p-2">
+                  <h2 className="font-semibold  text-sm 2xl:text-2xl line-clamp-2 h-[2.7em]">
+                    {artist.name}
+                  </h2>
+                </div>
               </div>
-            </div>
-          </Fragment>
-        );
-      })}
+            </Fragment>
+          );
+        })}
+      </div>
     </>
   );
 }

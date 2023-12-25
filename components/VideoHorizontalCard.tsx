@@ -1,13 +1,22 @@
 import Image from "next/image";
+
+import {
+  BarsArrowUpIcon,
+  PlayIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
+
 import { PlaylistItem } from "../types";
 
 interface VideoHorizontalCardProps {
   video: PlaylistItem;
+  onPlayNow?: (video: PlaylistItem) => void;
   onSelect?: (video: PlaylistItem) => void;
   onDelete?: (video: PlaylistItem) => void;
 }
 export default function VideoHorizontalCard({
   video,
+  onPlayNow = () => {},
   onSelect = () => {},
   onDelete = () => {},
 }: VideoHorizontalCardProps) {
@@ -37,18 +46,28 @@ export default function VideoHorizontalCard({
       </div>
 
       <div className="collapse-content p-0">
-        <div className="flex flex-row gap-1 px-2 pt-4 pb-0 border-t">
+        <div className="flex flex-row gap-1 px-2 pt-4 pb-0 border-t text-xs">
           <div
-            className="btn  btn-primary flex-1 2xl:text-2xl"
+            className="btn  btn-primary flex-auto 2xl:text-2xl gap-2 text-xs"
+            onClick={() => onPlayNow(video)}
+          >
+            <PlayIcon className="w-5 h-5" />
+            เล่นเลย
+          </div>
+
+          <div
+            className="btn  btn-primary flex-auto  2xl:text-2xl gap-2 text-xs"
             onClick={() => onSelect(video)}
           >
-            เลื่อนเป็นคิวแรก
+            <BarsArrowUpIcon className="w-5 h-5" />
+            เล่นเป็นคิวแรก
           </div>
           <div
-            className="btn  btn-ghost text-error flex-1 2xl:text-2xl"
+            className="btn  btn-ghost text-error flex-auto 2xl:text-2xl gap-2 text-xs"
             onClick={() => onDelete(video)}
           >
-            ลบออก
+            <TrashIcon className="w-5 h-5" />
+            ลบออกจากคิว
           </div>
         </div>
       </div>

@@ -22,9 +22,25 @@ export default async function handler(
       artistList = jsonData.props.pageProps.artistList;
       const artistCategoriesData = jsonData.props.pageProps.artistCategories;
 
-      artistCategories = artistCategoriesData.categories.reduce((acc, cur) => {
-        return [...acc, ...cur.tag_list];
-      }, []);
+      const artistCategoriesRaw = artistCategoriesData.categories.reduce(
+        (acc, cur) => {
+          return [...acc, ...cur.tag_list];
+        },
+        []
+      );
+
+      artistCategories = [];
+
+      for (let i = 0; i < artistCategoriesRaw.length; i++) {
+        const data = artistCategoriesRaw[i];
+        const jooxTagImgData = await axios.get(
+          `https://api-jooxtt.sanook.com/openjoox/v1/tag/${data.tag_id}/artists?country=th&lang=th&index=0&num=1`
+        );
+
+        const jooxTagImg = jooxTagImgData?.data?.artists?.items;
+
+        artistCategories.push({ ...data, image: jooxTagImg[0].images[0].url });
+      }
     } catch (error) {
       console.log(error);
     }

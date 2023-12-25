@@ -1,16 +1,16 @@
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router'
 
 import {
-  ArrowLeftOnRectangleIcon,
-  ArrowRightOnRectangleIcon,
-  ChatBubbleLeftIcon,
-  MusicalNoteIcon,
-  TrophyIcon,
-  UserGroupIcon,
-} from "@heroicons/react/24/outline";
+    ArrowLeftOnRectangleIcon,
+    ArrowRightOnRectangleIcon,
+    ChatBubbleLeftIcon,
+    MusicalNoteIcon,
+    RectangleStackIcon,
+    UserGroupIcon,
+} from '@heroicons/react/24/outline'
 
-import { useAuth } from "../context/AuthContext";
-import { useKaraokeState } from "../hooks/karaoke";
+import { useAuth } from '../context/AuthContext'
+import { useKaraokeState } from '../hooks/karaoke'
 
 export default function BottomNavigation() {
   const { activeIndex, setActiveIndex } = useKaraokeState();
@@ -20,7 +20,7 @@ export default function BottomNavigation() {
   const isLogin = !!user.uid;
 
   return (
-    <div className="btm-nav static flex-shrink-0 h-1/9 text-sm">
+    <div className="btm-nav absolute bottom-0 w-full sm:w-1/2 h-1/9 text-sm z-20">
       <button
         className={`text-primary  shrink ${activeIndex === 1 ? "active" : ""}`}
         onClick={() => setActiveIndex(1)}
@@ -29,13 +29,13 @@ export default function BottomNavigation() {
         <span className="btm-nav-label">ศิลปิน</span>
       </button>
       <button
-        className={`text-primary shrink ${activeIndex === 2 ? "active" : ""}`}
-        onClick={() => setActiveIndex(2)}
+        className={`text-primary shrink ${activeIndex === 3 ? "active" : ""}`}
+        onClick={() => setActiveIndex(3)}
       >
-        <TrophyIcon className="w-6 h-6" />
-        <span className="btm-nav-label ">เพลงฮิต</span>
+        <RectangleStackIcon className="w-6 h-6" />
+        <span className="btm-nav-label ">เพลย์ลิสต์</span>
       </button>
-      <a
+      {/* <a
         className={`text-primary shrink`}
         href={isLogin ? "https://party.okeforyou.com/" : ""}
         target="_blank"
@@ -49,7 +49,7 @@ export default function BottomNavigation() {
       >
         <UserGroupIcon className="w-6 h-6" />
         โหมด Party
-      </a>
+      </a> */}
 
       <a
         className={`text-primary shrink`}
@@ -63,20 +63,22 @@ export default function BottomNavigation() {
       {!user.uid ? (
         <button
           title="เข้าสู่ระบบ"
-          className={`text-gray-500 flex-none  w-10 h-8`}
+          className={`text-primary shrink`}
           onClick={() => {
             router.push("/login");
           }}
         >
-          <ArrowLeftOnRectangleIcon className="w-5 h-5" />
+          <ArrowLeftOnRectangleIcon className="w-6 h-6" />
+          เข้าสู่ระบบ
         </button>
       ) : (
         <button
-          className={`text-gray-500 flex-none  w-10 h-8`}
+          className={`text-primary shrink`}
           onClick={logOut}
           title="ออกจากระบบ"
         >
-          <ArrowRightOnRectangleIcon className="w-5 h-5" />
+          <ArrowRightOnRectangleIcon className="w-6 h-6" />
+          ออกจากระบบ
         </button>
       )}
     </div>

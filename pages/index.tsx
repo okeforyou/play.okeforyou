@@ -1,15 +1,41 @@
+import {
+  arrayUnion,
+  collection,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DebounceInput } from "react-debounce-input";
 
-import { ListBulletIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+import {
+  BarsArrowUpIcon,
+  ListBulletIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/20/solid";
+import {
+  BookmarkIcon,
+  CheckCircleIcon,
+  ChevronRightIcon,
+  PlusIcon,
+  RssIcon,
+} from "@heroicons/react/24/outline";
 
+import Alert from "../components/Alert";
 import BottomNavigation from "../components/BottomNavigation";
+import ListPlaylistsGrid from "../components/ListPlaylistsGrid";
+import Modal, { ModalHandler } from "../components/Modal";
 import SearchResultGrid from "../components/SearchResultGrid";
 import VideoHorizontalCard from "../components/VideoHorizontalCard";
 import YoutubePlayer from "../components/YoutubePlayer";
+import { useAuth } from "../context/AuthContext";
+import { database } from "../firebase";
 import { useKaraokeState } from "../hooks/karaoke";
+import { useMyPlaylistState } from "../hooks/myPlaylist";
 import { RecommendedVideo, SearchResult } from "../types/invidious";
 
 const ListSingerGrid = dynamic(() => import("../components/ListSingerGrid"), {
@@ -32,6 +58,11 @@ function HomePage() {
     setIsKaraoke,
     setActiveIndex,
   } = useKaraokeState();
+
+  const { user } = useAuth();
+  const { myPlaylist, setMyPlaylist } = useMyPlaylistState();
+  const addPlaylistModalRef = useRef<ModalHandler>(null);
+  const alertRef = useRef();
 
   const [selectedVideo, setSelectedVideo] = useState<
     SearchResult | RecommendedVideo
@@ -61,24 +92,80 @@ function HomePage() {
     setPlaylist([{ key: new Date().getTime(), ...video }, ...newPlaylist]);
   }
 
+  function skipVideoTo(
+    video: SearchResult | RecommendedVideo,
+    videoIndex?: number
+  ) {
+    setCurVideoId(video.videoId);
+    setPlaylist(playlist?.slice(videoIndex + 1));
+  }
+
+  const getMyPlaylists = async () => {
+    try {
+      const playlistsRef = collection(database, "playlists");
+      const q = query(playlistsRef, where("createdBy", "==", user.uid));
+      const querySnapshot = await getDocs(q);
+      const data = [];
+      querySnapshot.forEach((doc) => {
+        data.push({
+          id: doc.id,
+          ...doc.data(),
+        });
+      });
+
+      setMyPlaylist(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     if (searchTerm) setActiveIndex(0);
   }, [searchTerm]);
 
+  useEffect(() => {
+    setSearchTerm("");
+    setActiveIndex(1);
+  }, []);
+
+  const addVideoToMyPlaylist = async (key, data) => {
+    const docRef = doc(database, "playlists", key);
+    try {
+      await updateDoc(docRef, {
+        playlists: arrayUnion(data),
+      });
+      addPlaylistModalRef?.current.close();
+      //@ts-ignore
+      alertRef?.current.open();
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const scrollbarCls =
     "scrollbar scrollbar-w-1 scrollbar-thumb-gray-400 hover:scrollbar-thumb-gray-500 scrollbar-track-base-300 scrollbar-thumb-rounded";
 
   const PlaylistScreen = (
     <>
-      <div className="flex flex-row font-bold">
-        <span className="text-primary">
-          เพลงที่เลือกใว้มี ( {playlist?.length || 0} เพลง )
+      <div className="flex flex-row font-bold gap-2 items-center">
+        <button
+          className="btn btn-primary btn-xs gap-1 flex  flex-row 2xl:btn-sm "
+          onClick={() => {
+            const videoIds = playlist.map((p) => p.videoId).join(",");
+            const youtubeURL = `http://www.youtube.com/watch_videos?video_ids=${videoIds}`;
+            window.open(youtubeURL);
+          }}
+        >
+          <RssIcon className="w-4 h-4" /> Cast Youtube
+        </button>
+        <span className="text-primary text-xs 2xl:text-xl">
+          คิวเพลง ( {playlist?.length || 0} เพลง )
         </span>
+
         {!playlist?.length ? null : (
           <div className="dropdown dropdown-end ml-auto">
             <label
               tabIndex={0}
-              className="btn btn-xs btn-ghost text-error 2xl:text-xl"
+              className="btn btn-xs btn-ghost text-error 2xl:text-xl p-0"
             >
               ลบทั้งหมด
             </label>
@@ -103,14 +190,13 @@ function HomePage() {
           </div>
         )}
       </div>
-      <div
-        className={`flex-shrink-0 h-full overflow-y-auto pt-2 pb-12 ${scrollbarCls}`}
-      >
+      <div className={`flex-shrink-0  pt-2 pb-12  `}>
         <div className="grid grid-cols-1 gap-2">
           {playlist?.map((video, videoIndex) => (
             <VideoHorizontalCard
-              key={video.key}
+              key={videoIndex}
               video={video}
+              onPlayNow={() => skipVideoTo(video, videoIndex)}
               onSelect={() => priorityVideo(video, videoIndex)}
               onDelete={() =>
                 setPlaylist(playlist.filter((_, index) => index !== videoIndex))
@@ -128,7 +214,7 @@ function HomePage() {
         <div className="relative flex flex-col sm:flex-row h-screen overflow-hidden">
           {/* START Recommend Videos List */}
           <div className="order-2 sm:order-1 flex flex-col h-full w-full overflow-hidden">
-            <div className="flex flex-col h-full overflow-hidden">
+            <div className="flex flex-col h-full overflow-hidden relative">
               {/* START Search Bar */}
               <div className="flex flex-row gap-2 p-1 justify-between items-center bg-primary">
                 {/* START Search Input */}
@@ -180,7 +266,8 @@ function HomePage() {
               {/* END Search Bar */}
               {/* Recommend Videos List */}
               <div
-                className={`relative grid grid-cols-2 xl:grid-cols-3 auto-rows-min gap-2 w-full overflow-y-auto max-h-full p-2 ${scrollbarCls}`}
+                className={`relative grid grid-cols-2 xl:grid-cols-3 auto-rows-min gap-2 w-full h-screen p-2 pb-20   ${scrollbarCls}`}
+                style={{ overflowY: "scroll" }}
               >
                 {/* START Video Row Item */}
 
@@ -192,12 +279,14 @@ function HomePage() {
                     />,
                     <ListSingerGrid key={1} />,
                     <ListTopicsGrid key={2} />,
+                    <ListPlaylistsGrid key={3} />,
                   ][activeIndex]
                 }
 
                 {/* END Video Row Item */}
               </div>
               {/* Put this part before </body> tag */}
+
               <input
                 type="checkbox"
                 id="modal-playlist"
@@ -229,7 +318,7 @@ function HomePage() {
                   className="modal-box relative px-2 py-4 pb-12 sm:p-4"
                   htmlFor=""
                 >
-                  <div className="card gap-2">
+                  <div className="card gap-2 min-h-min">
                     <h2 className="card-title text-sm 2xl:text-2xl">
                       {selectedVideo?.title}
                     </h2>
@@ -247,23 +336,80 @@ function HomePage() {
                       <div className="card-actions">
                         <label
                           htmlFor="modal-video"
-                          className="btn btn-primary flex-1 2xl:text-2xl"
+                          className="btn btn-primary flex-auto gap-2 btn-sm"
                           onClick={() => addVideoToPlaylist(selectedVideo)}
                         >
-                          เลือก
+                          <PlusIcon className="h-4 w-4" />
+                          {playlist?.length || !!curVideoId
+                            ? "เพิ่มในคิว"
+                            : "เล่นเลย"}
                         </label>
                         <label
                           htmlFor="modal-video"
-                          className="btn btn-primary flex-1 2xl:text-2xl"
+                          className="btn btn-primary flex-auto gap-2 btn-sm"
                           onClick={() => priorityVideo(selectedVideo)}
                         >
-                          เลือกเป็นคิวแรก
+                          <BarsArrowUpIcon className="h-4 w-4" />
+                          เล่นเป็นคิวแรก
                         </label>
+                        {!!user.uid && (
+                          <label
+                            htmlFor="modal-video"
+                            className="btn btn-primary flex-auto gap-2 btn-sm"
+                            onClick={(e) => {
+                              addPlaylistModalRef?.current.open();
+                            }}
+                          >
+                            <BookmarkIcon className="h-4 w-4" />
+                            เพลย์ลิสต์
+                          </label>
+                        )}
                       </div>
                     </div>
                   </div>
                 </label>
               </label>
+              <Alert
+                ref={alertRef}
+                timer={2500}
+                headline="สำเร็จ"
+                headlineColor="text-green-600"
+                bgColor="bg-green-100"
+                content={<span className="text-sm">เพิ่มเพลย์ลิสต์สำเร็จ</span>}
+                icon={<CheckCircleIcon />}
+              />
+              <Modal
+                ref={addPlaylistModalRef}
+                title={<>เลือกเพลย์ลิสต์ที่ต้องการ</>}
+                body={
+                  <div className="relative px-8 flex-auto w-96">
+                    <div className="pb-4">{selectedVideo?.title}</div>
+                    <div className="py-2 overflow-y-auto max-h-64">
+                      {myPlaylist.map((p, index) => (
+                        <label
+                          className="label cursor-pointer hover:bg-gray-300 rounded-lg p-2 transition-all duration-150"
+                          key={"pl-" + index}
+                          onClick={() =>
+                            addVideoToMyPlaylist(p.id, selectedVideo)
+                          }
+                        >
+                          <span className="label-text flex items-center gap-2">
+                            <ChevronRightIcon className="w-4 h-4" /> {p.name}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                }
+                footer={
+                  <button
+                    className="font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    onClick={getMyPlaylists}
+                  >
+                    รีเฟรช
+                  </button>
+                }
+              />
             </div>
 
             <BottomNavigation />
@@ -276,7 +422,9 @@ function HomePage() {
               nextSong={() => setCurVideoId("")}
               className="flex flex-col flex-1 sm:flex-grow-0"
             />
-            <div className="max-h-full w-full p-2 overflow-hidden hidden sm:flex flex-col">
+            <div
+              className={`max-h-full w-full p-2 overflow-y-scroll hidden sm:flex flex-col ${scrollbarCls}`}
+            >
               {PlaylistScreen}
             </div>
           </div>

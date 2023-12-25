@@ -10,7 +10,7 @@ export default async function handler(
   try {
     let songList = [];
 
-    const jooxData = await axios.get(`https://www.joox.com/th/chart/46`);
+    const jooxData = await axios.get(`https://www.joox.com/th/chart/42`);
     try {
       var match = jooxData.data.match(
         /(?<=<script id="__NEXT_DATA__" type="application\/json">)(.*?)(?=<\/script>)/

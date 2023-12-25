@@ -4,7 +4,7 @@ import { GetArtists, GetTopics } from "../types";
 import { SearchResult, VideoResponse } from "../types/invidious";
 
 const invidious = axios.create({
-  baseURL: "https://onion.tube",
+  baseURL: "https://invidious.fdn.fr",
 });
 
 export const getVideoInfo = async (videoId: string) => {
@@ -12,7 +12,7 @@ export const getVideoInfo = async (videoId: string) => {
     throw new Error("Missing query key!");
   }
   const res = await invidious.get<VideoResponse>(
-    "/api/v1/videos/" + videoId + "/?fields=recommendedVideos"
+    "/api/v1/videos/" + videoId + "?fields=recommendedVideos"
   );
   return res.data;
 };

@@ -33,6 +33,9 @@ const Alert = forwardRef(
       open() {
         setAlert(true);
       },
+      close() {
+        setAlert(false);
+      },
     }));
 
     useEffect(() => {
@@ -57,6 +60,8 @@ const Alert = forwardRef(
         <div
           className={`transition-opacity duration-200 ${
             isAlertOpen ? "opacity-100" : "opacity-0"
+          } ${
+            isAlertOpen ? "" : "hidden"
           } fixed max-w-fit top-0 right-0 left-0 mx-auto mt-4 z-50`}
         >
           <div
