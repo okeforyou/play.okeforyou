@@ -11,9 +11,9 @@ export default function ListSingerGrid() {
     getTopArtists
   );
 
-  const [gender, setGender] = useState(193);
-  const { data: artists, isLoading } = useQuery(["getArtists", gender], () =>
-    getArtists(gender)
+  const [tagId, setTagId] = useState("193");
+  const { data: artists, isLoading } = useQuery(["getArtists", tagId], () =>
+    getArtists(tagId)
   );
   const { setSearchTerm } = useKaraokeState();
   const { artist: topArtists } = topArtistsData || {};
@@ -92,7 +92,6 @@ export default function ListSingerGrid() {
         <div
           className={`tabs tabs-boxed col-span-full justify-center bg-transparent relative grid grid-cols-3 xl:grid-cols-5  gap-2 col-span-full p-0`}
         >
-          {/* @ts-ignore */}
           {topArtistsData.artistCategories.map((cat) => {
             const names = cat.tag_name.replace("/ ", "").split(" ");
 
@@ -107,11 +106,11 @@ export default function ListSingerGrid() {
               <div
                 key={cat.tag_id}
                 className={`text-sm h-20 leading-6 hover:drop-shadow-xl hover:text-slate-200 tracking-wide text-white bg-slate-900 tab bg-cover bg-no-repeat ${
-                  gender == cat.tag_id ? "tab-active" : ""
+                  tagId == cat.tag_id ? "tab-active" : ""
                 }   
                 `}
-                onClick={() => setGender(cat.tag_id)}
-                style={{ backgroundImage: `url('${cat.image}')` }}
+                onClick={() => setTagId(cat.tag_id)}
+                style={{ backgroundImage: `url('${cat.imageUrl}')` }}
               >
                 <div
                   className="absolute  top-0 h-full w-full bg-fixed items-center"
@@ -140,12 +139,9 @@ export default function ListSingerGrid() {
         </>
       )}
       <div className="col-span-full bg-transparent p-4 pb-2 pl-2 text-2xl">
-        {
-          //  @ts-ignore
-          (topArtistsData?.artistCategories || []).find(
-            (cat) => cat.tag_id === gender
-          )?.tag_name || "ศิลปินไทย ชายเดี่ยว"
-        }
+        {(topArtistsData?.artistCategories || []).find(
+          (cat) => cat.tag_id === tagId
+        )?.tag_name || "ศิลปินไทย ชายเดี่ยว"}
       </div>
       <div
         className={`tabs tabs-boxed col-span-full justify-center bg-transparent relative grid grid-cols-3 xl:grid-cols-5  gap-2 col-span-full p-0`}

@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import axios from "axios";
+import axios from 'axios'
 
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -23,7 +23,7 @@ export default async function handler(
 
     const topics = {
       status: "success",
-      topic: songList.map((a) => ({
+      singles: songList.map((a) => ({
         title: a.name,
         artist_name: a.artist_list[0].name,
         coverImageURL: a.images[0].url,

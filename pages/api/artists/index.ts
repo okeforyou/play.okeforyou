@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import axios from "axios";
+import axios from 'axios'
 
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -39,7 +39,10 @@ export default async function handler(
 
         const jooxTagImg = jooxTagImgData?.data?.artists?.items;
 
-        artistCategories.push({ ...data, image: jooxTagImg[0].images[0].url });
+        artistCategories.push({
+          ...data,
+          imageUrl: jooxTagImg[0].images[0].url,
+        });
       }
     } catch (error) {
       console.log(error);

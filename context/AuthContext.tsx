@@ -1,13 +1,12 @@
 import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signOut,
-} from "firebase/auth";
-import nookies from "nookies";
-import React, { createContext, useContext, useEffect, useState } from "react";
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+} from 'firebase/auth'
+import nookies from 'nookies'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 
-import { auth } from "../firebase";
+import { auth } from '../firebase'
 
 // User data type interface
 interface UserType {
@@ -30,24 +29,6 @@ export const AuthContextProvider = ({
   // Define the constants for the user and loading state
   const [user, setUser] = useState<UserType>({ email: null, uid: null });
   const [loading, setLoading] = useState<Boolean>(true);
-
-  // // Update the state depending on auth
-  // useEffect(() => {
-  //   const unsubscribe = onAuthStateChanged(auth, (user) => {
-  //     if (user) {
-  //       setUser({
-  //         email: user.email,
-  //         uid: user.uid,
-  //       });
-  //     } else {
-  //       setUser({ email: null, uid: null });
-  //     }
-  //   });
-
-  //   setLoading(false);
-
-  //   return () => unsubscribe();
-  // }, []);
 
   // listen for token changes
   // call setUser and write new token as a cookie

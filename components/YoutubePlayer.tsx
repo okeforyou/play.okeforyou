@@ -1,25 +1,25 @@
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useFullscreen, usePromise, useToggle } from "react-use";
-import YouTube, { YouTubePlayer, YouTubeProps } from "react-youtube";
+import Image from 'next/image'
+import { useRouter } from 'next/router'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useFullscreen, usePromise, useToggle } from 'react-use'
+import YouTube, { YouTubePlayer, YouTubeProps } from 'react-youtube'
 
 import {
-  ArrowUturnLeftIcon,
-  ForwardIcon,
-  PauseIcon,
-  PlayIcon,
-  SpeakerWaveIcon,
-  SpeakerXMarkIcon,
-} from "@heroicons/react/20/solid";
+    ArrowUturnLeftIcon,
+    ForwardIcon,
+    PauseIcon,
+    PlayIcon,
+    SpeakerWaveIcon,
+    SpeakerXMarkIcon,
+} from '@heroicons/react/20/solid'
 import {
-  ArrowsPointingInIcon,
-  ArrowsPointingOutIcon,
-  ExclamationTriangleIcon,
-} from "@heroicons/react/24/outline";
+    ArrowsPointingInIcon,
+    ArrowsPointingOutIcon,
+    ExclamationTriangleIcon,
+} from '@heroicons/react/24/outline'
 
-import { useAuth } from "../context/AuthContext";
-import Alert from "./Alert";
+import { useAuth } from '../context/AuthContext'
+import Alert, { AlertHandler } from './Alert'
 
 function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
   const playerRef = useRef<YouTube>();
@@ -32,14 +32,11 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
   const { user } = useAuth();
   const router = useRouter();
   const [isFullScreenIphone, setIsFullScreenIphone] = useState<boolean>(false);
-  const alertRef = useRef();
-  const alertFullNotWorkRef = useRef();
+  const alertRef = useRef<AlertHandler>(null);
+  const alertFullNotWorkRef = useRef<AlertHandler>(null);
 
   const [isIphone, setIsIphone] = useState<boolean>(false);
 
-  // const isIphone = false;
-  //@ts-ignore
-  // !fullscreenRef.webkitEnterFullScreen &&
   const isIOS =
     /iPad|iPhone/i.test(navigator.userAgent) ||
     (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
@@ -79,7 +76,6 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
   // Event handler for triggering fullscreen on a user gesture
   const handleFullscreenButtonClick = () => {
     if (!isIphone && !isFullscreen) {
-      //@ts-ignore
       alertFullNotWorkRef?.current.open();
     }
 
@@ -102,12 +98,9 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
       }
     } else if (isIphone) {
       setIsFullScreenIphone(!isFullScreenIphone);
-      // const player = playerRef.current?.getInternalPlayer();
-      // pauseVideo(player);
-      //@ts-ignore
+
       !isFullScreenIphone && alertRef?.current.open();
     } else {
-      // return;
       // Toggle fullscreen for other OS / Devices / Browsers
       console.log("Toggle fullscreen for other OS / Devices / Browsers");
       toggleFullscreen();
@@ -193,7 +186,6 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
             label: "เต็มจอ",
             onClick: async () => {
               handleFullscreenButtonClick();
-              // setIsFullScreenIphone(!isFullScreenIphone);
             },
           }
         : {
@@ -235,10 +227,7 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
     [nextSong]
   );
 
-  //@ts-ignore
-  const UseFullScreenCss =
-    //  navigator?.standalone &&
-    isFullScreenIphone;
+  const UseFullScreenCss = isFullScreenIphone;
 
   return (
     <div

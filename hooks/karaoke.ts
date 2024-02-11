@@ -1,4 +1,4 @@
-import { useLocalStorageValue } from "@react-hookz/web";
+import { useLocalStorageValue } from '@react-hookz/web'
 
 export function useKaraokeState() {
   const { value: playlist, set: setPlaylist } = useLocalStorageValue(
@@ -8,7 +8,7 @@ export function useKaraokeState() {
   const { value: curVideoId, set: setCurVideoId } = useLocalStorageValue(
     "videoId",
     { defaultValue: "" }
-  ); // TODO: make a video instruction and put it as a initial here
+  );
 
   const { value: searchTerm, set: setSearchTerm } = useLocalStorageValue(
     "searchTerm",

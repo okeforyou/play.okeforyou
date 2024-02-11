@@ -3,12 +3,12 @@ import { Fragment } from 'react'
 import { useQuery } from 'react-query'
 
 import { useKaraokeState } from '../hooks/karaoke'
-import { getSkeletonItems, getTopics } from '../utils/api'
+import { getHitSingles, getSkeletonItems } from '../utils/api'
 
 export default function ListTopicsGrid() {
-  const { data, isLoading } = useQuery(["getTopics"], getTopics);
+  const { data, isLoading } = useQuery(["getHitSingles"], getHitSingles);
   const { setActiveIndex, setSearchTerm } = useKaraokeState();
-  const { topic: topics } = data || {};
+  const { singles: topics } = data || {};
 
   return (
     <>
@@ -42,19 +42,14 @@ export default function ListTopicsGrid() {
             ))}
           </>
         )}
-        {topics?.map((topic) => {
+        {topics?.map((topic, key) => {
           return (
-            <Fragment key={topic.key}>
+            <Fragment key={key}>
               <div
-                key={"card" + topic.key}
+                key={"card" + key}
                 className="card rounded-lg overflow-hidden bg-white shadow hover:shadow-md cursor-pointer flex-auto"
                 onClick={() => {
-                  setSearchTerm(
-                    topic.title +
-                      " " +
-                      //@ts-ignore
-                      topic.artist_name
-                  );
+                  setSearchTerm(topic.title + " " + topic.artist_name);
                   setActiveIndex(0);
                 }}
               >
@@ -79,7 +74,6 @@ export default function ListTopicsGrid() {
                     {topic.title}
                   </h2>
                   <h2 className="text-xs 2xl:text-lg text-gray-400">
-                    {/* @ts-ignore */}
                     {topic.artist_name}
                   </h2>
                 </div>

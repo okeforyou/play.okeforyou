@@ -1,45 +1,45 @@
-import { RecommendedVideo, SearchResult } from "./invidious";
+import { RecommendedVideo, SearchResult } from './invidious'
 
 export type PlaylistItem = (SearchResult | RecommendedVideo) & {
   key: number;
 };
 
 export interface Artist {
-  artistId: number;
   name: string;
-  shortLink: string;
+  imageUrl: string;
+}
+
+export interface ArtistCategory {
+  tag_id: string;
+  tag_name: string;
   imageUrl: string;
 }
 
 export interface GetArtists {
   status: string;
   artist: Artist[];
+
   clientIp: string;
   time: number;
 }
 
-export interface Topic {
-  title: string;
-  key: string;
-  backgroundColor: string;
-  description: string;
-  coverImageURL: string;
-  thumbURL: string;
-}
-
-export interface TopicCover {
-  title: string;
-  key: string;
-  backgroundColor: string;
-  description: string;
-  coverImageURL: string;
-  thumbURL: string;
-}
-
-export interface GetTopics {
+export interface GetTopArtists {
   status: string;
-  topic: Topic[];
-  topicCover: TopicCover[];
+  artist: Artist[];
+  artistCategories: ArtistCategory[];
+  clientIp: string;
+  time: number;
+}
+
+export interface Single {
+  title: string;
+  artist_name: string;
+  coverImageURL: string;
+}
+
+export interface GetHitSingles {
+  status: string;
+  singles: Single[];
   clientIp: string;
   time: number;
 }

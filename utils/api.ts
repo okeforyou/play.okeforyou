@@ -1,7 +1,7 @@
-import axios from "axios";
+import axios from 'axios'
 
-import { GetArtists, GetTopics } from "../types";
-import { SearchResult, VideoResponse } from "../types/invidious";
+import { GetArtists, GetHitSingles, GetTopArtists } from '../types'
+import { SearchResult, VideoResponse } from '../types/invidious'
 
 const invidious = axios.create({
   baseURL: "https://invidious.fdn.fr",
@@ -35,16 +35,16 @@ export const getSkeletonItems = (length: number) =>
   Array.from({ length }).map((_, i) => i);
 
 export const getTopArtists = async () => {
-  const res = await axios.get<GetArtists>("/api/artists/");
+  const res = await axios.get<GetTopArtists>("/api/artists/");
   return res.data;
 };
 
-export const getArtists = async (gender: number = 1) => {
+export const getArtists = async (gender: string = "1") => {
   const res = await axios.get<GetArtists>("/api/artists/" + gender);
   return res.data;
 };
 
-export const getTopics = async () => {
-  const res = await axios.get<GetTopics>("/api/topics");
+export const getHitSingles = async () => {
+  const res = await axios.get<GetHitSingles>("/api/hits");
   return res.data;
 };

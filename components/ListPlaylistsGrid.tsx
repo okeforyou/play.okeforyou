@@ -33,7 +33,7 @@ import { database } from '../firebase'
 import { useKaraokeState } from '../hooks/karaoke'
 import { useMyPlaylistState } from '../hooks/myPlaylist'
 import { getSkeletonItems } from '../utils/api'
-import Alert from './Alert'
+import Alert, { AlertHandler } from './Alert'
 import Modal, { ModalHandler } from './Modal'
 
 const playlistsRef = collection(database, "playlists");
@@ -57,7 +57,7 @@ export default function ListPlaylistsGrid() {
 
   const createModalRef = useRef<ModalHandler>(null);
   const playlistModalRef = useRef<ModalHandler>(null);
-  const alertRef = useRef();
+  const alertRef = useRef<AlertHandler>(null);
 
   //for firstime load
   const [isLoadPlaylist, setIsLoadPlaylist] = useState({
@@ -203,8 +203,6 @@ export default function ListPlaylistsGrid() {
     }
   };
 
-  // Set the "capital" field of the city 'DC'
-
   const handleCreatePlaylist = async () => {
     const { name, type } = data;
 
@@ -257,7 +255,6 @@ export default function ListPlaylistsGrid() {
     await updateDoc(docRef, {
       starCount: increment(1),
     });
-    //@ts-ignore
     alertRef?.current.open();
   };
 

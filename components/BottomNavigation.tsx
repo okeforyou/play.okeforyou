@@ -6,7 +6,6 @@ import {
     ChatBubbleLeftIcon,
     MusicalNoteIcon,
     RectangleStackIcon,
-    UserGroupIcon,
 } from '@heroicons/react/24/outline'
 
 import { useAuth } from '../context/AuthContext'
@@ -16,8 +15,6 @@ export default function BottomNavigation() {
   const { activeIndex, setActiveIndex } = useKaraokeState();
   const { logOut, user } = useAuth();
   const router = useRouter();
-
-  const isLogin = !!user.uid;
 
   return (
     <div className="btm-nav absolute bottom-0 w-full sm:w-1/2 h-1/9 text-sm z-20">
@@ -35,22 +32,6 @@ export default function BottomNavigation() {
         <RectangleStackIcon className="w-6 h-6" />
         <span className="btm-nav-label ">เพลย์ลิสต์</span>
       </button>
-      {/* <a
-        className={`text-primary shrink`}
-        href={isLogin ? "https://party.okeforyou.com/" : ""}
-        target="_blank"
-        rel="noopener"
-        onClick={(e) => {
-          if (!isLogin) {
-            e.preventDefault();
-            router.push("/login");
-          }
-        }}
-      >
-        <UserGroupIcon className="w-6 h-6" />
-        โหมด Party
-      </a> */}
-
       <a
         className={`text-primary shrink`}
         href="https://okeforyou.com/contact/"

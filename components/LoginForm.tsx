@@ -1,12 +1,11 @@
-import NextLink from "next/link";
-import { useRouter } from "next/router";
-import { useRef, useState } from "react";
+import { useRouter } from 'next/router'
+import { useRef, useState } from 'react'
 
-import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import { ExclamationCircleIcon } from '@heroicons/react/24/outline'
 
-import { useAuth } from "../context/AuthContext";
-import { LoginType } from "../types/AuthTypes";
-import Alert from "./Alert";
+import { useAuth } from '../context/AuthContext'
+import { LoginType } from '../types/AuthTypes'
+import Alert, { AlertHandler } from './Alert'
 
 const LoginForm = () => {
   const [data, setData] = useState<LoginType>({
@@ -17,7 +16,7 @@ const LoginForm = () => {
   // Use the signIn method from the AuthContext
   const { logIn } = useAuth();
   const router = useRouter();
-  const errRef = useRef();
+  const errRef = useRef<AlertHandler>(null);
 
   const handleLogin = async (e: any) => {
     e.preventDefault();
@@ -25,7 +24,6 @@ const LoginForm = () => {
       await logIn(data.email, data.password);
       router.push("/");
     } catch (error: any) {
-      //@ts-ignore
       errRef.current.open();
     }
   };

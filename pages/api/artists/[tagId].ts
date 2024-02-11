@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import axios from "axios";
+import axios from 'axios'
 
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -10,10 +10,10 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    let { gender } = req.query;
-    if (Array.isArray(gender)) gender = gender[0];
+    let { tagId } = req.query;
+    if (Array.isArray(tagId)) tagId = tagId[0];
 
-    const tag = gender;
+    const tag = tagId;
 
     const jooxTagData = await axios.get(
       `https://api-jooxtt.sanook.com/openjoox/v1/tag/${tag}/artists?country=th&lang=th&index=0&num=50`
