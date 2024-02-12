@@ -1,4 +1,4 @@
-# Nextjs Karaoke Online
+# Okeforyou Karaoke Online
 
 ## Tech stack
 
@@ -13,7 +13,6 @@
   ...
 }
 ```
-
 
 ## Getting Started
 
