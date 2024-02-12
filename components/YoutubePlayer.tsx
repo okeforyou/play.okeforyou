@@ -55,6 +55,8 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
   }
 
   const checkLogin = () => {
+    return;
+    //skip login
     if (!user.uid) {
       router.push("/login");
     }

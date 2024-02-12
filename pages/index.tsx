@@ -276,8 +276,8 @@ function HomePage() {
                       key={0}
                       onClick={(video) => setSelectedVideo(video)}
                     />,
-                    <ListSingerGrid key={1} />,
-                    <ListTopicsGrid key={2} />,
+                    <ListSingerGrid key={1} showTab={false} />,
+                    <ListTopicsGrid key={2} showTab={false} />,
                     <ListPlaylistsGrid key={3} />,
                   ][activeIndex]
                 }

@@ -5,7 +5,7 @@ import { useQuery } from 'react-query'
 import { useKaraokeState } from '../hooks/karaoke'
 import { getArtists, getSkeletonItems, getTopArtists } from '../utils/api'
 
-export default function ListSingerGrid() {
+export default function ListSingerGrid({ showTab = true }) {
   const { data: topArtistsData, isLoading: isLoadTopArtists } = useQuery(
     ["getTopArtists"],
     getTopArtists
@@ -23,20 +23,22 @@ export default function ListSingerGrid() {
   return (
     <>
       <div className="col-span-full  bg-transparent pt-2">
-        <nav className="tabs tabs-boxed flex justify-center  bg-transparent">
-          <button type="button" className="tab tab-active">
-            ศิลปินยอดฮิต
-          </button>
-          <button
-            type="button"
-            className="tab"
-            onClick={() => {
-              setActiveIndex(2);
-            }}
-          >
-            เพลงฮิต
-          </button>
-        </nav>
+        {showTab && (
+          <nav className="tabs tabs-boxed flex justify-center  bg-transparent">
+            <button type="button" className="tab tab-active">
+              ศิลปินยอดฮิต
+            </button>
+            <button
+              type="button"
+              className="tab"
+              onClick={() => {
+                setActiveIndex(2);
+              }}
+            >
+              เพลงฮิต
+            </button>
+          </nav>
+        )}
       </div>
       <div
         className={`relative grid grid-cols-4 xl:grid-cols-6  gap-2 col-span-full pt-4 pb-4`}
