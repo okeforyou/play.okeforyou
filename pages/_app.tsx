@@ -1,12 +1,12 @@
-import '../styles/global.css'
+import "../styles/global.css";
 
-import Head from 'next/head'
-import Script from 'next/script'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import Head from "next/head";
+import { QueryClient, QueryClientProvider } from "react-query";
 
-import { Analytics } from '@vercel/analytics/react'
+import { Analytics } from "@vercel/analytics/react";
 
-import { AuthContextProvider } from '../context/AuthContext'
+import GoogleAnalytics from "../components/GoogleAnalytics";
+import { AuthContextProvider } from "../context/AuthContext";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -68,19 +68,7 @@ function App({ Component, pageProps }) {
         </Head>
         {process.env.NODE_ENV !== "production" ? null : (
           <>
-            <Script
-              src="https://www.googletagmanager.com/gtag/js?id="
-              strategy="worker"
-            />
-            <Script id="google-analytics" strategy="worker">
-              {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){window.dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', '');
-        `}
-            </Script>
+            <GoogleAnalytics ga_id={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
           </>
         )}
         <QueryClientProvider client={queryClient}>
