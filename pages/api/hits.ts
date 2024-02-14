@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import axios from 'axios'
+import axios from "axios";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -10,7 +10,7 @@ export default async function handler(
   try {
     let songList = [];
 
-    const jooxData = await axios.get(`https://www.joox.com/th/chart/42`);
+    const jooxData = await axios.get(`https://www.joox.com/th/chart/128`);
     try {
       var match = jooxData.data.match(
         /(?<=<script id="__NEXT_DATA__" type="application\/json">)(.*?)(?=<\/script>)/
