@@ -9,6 +9,7 @@ import {
 } from "firebase/firestore";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { DebounceInput } from "react-debounce-input";
 
@@ -60,6 +61,8 @@ function HomePage() {
   } = useKaraokeState();
 
   const { user } = useAuth();
+  const router = useRouter();
+
   const { myPlaylist, setMyPlaylist } = useMyPlaylistState();
   const addPlaylistModalRef = useRef<ModalHandler>(null);
   const alertRef = useRef<AlertHandler>(null);
@@ -101,6 +104,10 @@ function HomePage() {
   }
 
   const getMyPlaylists = async () => {
+    if (!user.uid) {
+      return;
+    }
+
     try {
       const playlistsRef = collection(database, "playlists");
       const q = query(playlistsRef, where("createdBy", "==", user.uid));
@@ -351,18 +358,21 @@ function HomePage() {
                           <BarsArrowUpIcon className="h-4 w-4" />
                           เล่นเป็นคิวแรก
                         </label>
-                        {!!user.uid && (
-                          <label
-                            htmlFor="modal-video"
-                            className="btn btn-primary flex-auto gap-2 btn-sm"
-                            onClick={(e) => {
-                              addPlaylistModalRef?.current.open();
-                            }}
-                          >
-                            <BookmarkIcon className="h-4 w-4" />
-                            เพลย์ลิสต์
-                          </label>
-                        )}
+                        <label
+                          htmlFor="modal-video"
+                          className="btn btn-primary flex-auto gap-2 btn-sm"
+                          onClick={(e) => {
+                            if (!user.uid) {
+                              router.push("/login");
+
+                              return;
+                            }
+                            addPlaylistModalRef?.current.open();
+                          }}
+                        >
+                          <BookmarkIcon className="h-4 w-4" />
+                          เพลย์ลิสต์
+                        </label>
                       </div>
                     </div>
                   </div>

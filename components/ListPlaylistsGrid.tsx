@@ -1,40 +1,41 @@
 import {
-    addDoc,
-    arrayRemove,
-    collection,
-    deleteDoc,
-    doc,
-    getDocs,
-    increment,
-    limit,
-    orderBy,
-    query,
-    updateDoc,
-    where,
-} from 'firebase/firestore'
-import Image from 'next/image'
-import { Fragment, useEffect, useRef, useState } from 'react'
+  addDoc,
+  arrayRemove,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  increment,
+  limit,
+  orderBy,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 import {
-    PencilIcon,
-    PlusIcon,
-    RectangleStackIcon,
-    TrashIcon,
-} from '@heroicons/react/24/outline'
+  PencilIcon,
+  PlusIcon,
+  RectangleStackIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import {
-    EllipsisVerticalIcon,
-    HandThumbUpIcon,
-    LockClosedIcon,
-    PlayIcon,
-} from '@heroicons/react/24/solid'
+  EllipsisVerticalIcon,
+  HandThumbUpIcon,
+  LockClosedIcon,
+  PlayIcon,
+} from "@heroicons/react/24/solid";
 
-import { useAuth } from '../context/AuthContext'
-import { database } from '../firebase'
-import { useKaraokeState } from '../hooks/karaoke'
-import { useMyPlaylistState } from '../hooks/myPlaylist'
-import { getSkeletonItems } from '../utils/api'
-import Alert, { AlertHandler } from './Alert'
-import Modal, { ModalHandler } from './Modal'
+import { useAuth } from "../context/AuthContext";
+import { database } from "../firebase";
+import { useKaraokeState } from "../hooks/karaoke";
+import { useMyPlaylistState } from "../hooks/myPlaylist";
+import { getSkeletonItems } from "../utils/api";
+import Alert, { AlertHandler } from "./Alert";
+import Modal, { ModalHandler } from "./Modal";
 
 const playlistsRef = collection(database, "playlists");
 enum MODE {
@@ -49,6 +50,7 @@ export default function ListPlaylistsGrid() {
   const [playlists, setPlaylists] = useState([]);
   const [suggestPlaylists, setSuggestPlaylists] = useState([]);
   const [latestPlaylists, setLatestPlaylists] = useState([]);
+  const router = useRouter();
 
   const { setPlaylist } = useKaraokeState();
   const { myPlaylist, setMyPlaylist } = useMyPlaylistState();
@@ -86,6 +88,12 @@ export default function ListPlaylistsGrid() {
   }, [activeIndex, isLoadPlaylist]);
 
   const getMyPlaylists = async () => {
+    if (!user.uid) {
+      setPlaylists([]);
+      setMyPlaylist([]);
+      return;
+    }
+
     setIsLoading(true);
     try {
       const q = query(playlistsRef, where("createdBy", "==", user.uid));
@@ -275,7 +283,13 @@ export default function ListPlaylistsGrid() {
               <button
                 type="button"
                 className={`btn btn-primary btn-sm`}
-                onClick={() => openCreateModal()}
+                onClick={() => {
+                  if (!user.uid) {
+                    router.push("/login");
+                    return;
+                  }
+                  openCreateModal();
+                }}
               >
                 <PlusIcon className="w-4 h-4" />{" "}
                 <span className="pl-1 font-light ">สร้างเพลย์ลิสต์</span>
@@ -357,11 +371,16 @@ export default function ListPlaylistsGrid() {
                 <HandThumbUpIcon
                   title="ถูกใจ"
                   className={`w-5 h-5 text-gray-300 hover:text-primary cursor-pointer ${
-                    (activeIndex === 1 || !user.uid) && "hidden"
+                    activeIndex === 1 && "hidden"
                   }`}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
+                    if (!user.uid) {
+                      router.push("/login");
+                      return;
+                    }
+
                     handleAddLike(item.id);
                   }}
                 />
@@ -418,15 +437,13 @@ export default function ListPlaylistsGrid() {
           >
             เพลย์ลิสต์จากสมาชิก
           </button>
-          {!!user?.uid && (
-            <button
-              type="button"
-              className={`tab ${activeIndex === 1 && "tab-active"}`}
-              onClick={() => setActiveIndex(1)}
-            >
-              เพลย์ลิสต์ของฉัน
-            </button>
-          )}
+          <button
+            type="button"
+            className={`tab ${activeIndex === 1 && "tab-active"}`}
+            onClick={() => setActiveIndex(1)}
+          >
+            เพลย์ลิสต์ของฉัน
+          </button>
         </nav>
         {activeIndex == 1 && !!playlists.length && (
           <button

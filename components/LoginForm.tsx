@@ -24,7 +24,7 @@ const LoginForm = () => {
       await logIn(data.email, data.password);
       router.push("/");
     } catch (error: any) {
-      errRef.current.open();
+      errRef?.current.open();
     }
   };
 
@@ -34,7 +34,7 @@ const LoginForm = () => {
       await googleSignIn();
       router.push("/");
     } catch (error: any) {
-      errRef.current.open();
+      errRef?.current.open();
     }
   };
 

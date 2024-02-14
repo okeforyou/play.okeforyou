@@ -55,9 +55,10 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
   }
 
   const checkLogin = () => {
-    if (!user.uid) {
-      router.push("/login");
-    }
+    return true;
+    // if (!user.uid) {
+    //   router.push("/login");
+    // }
   };
 
   useEffect(() => {
@@ -336,7 +337,7 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
             loading="lazy"
             opts={{
               playerVars: {
-                autoplay: !!user.uid ? 1 : 0,
+                autoplay: 1,
                 controls: 0,
                 disablekb: 1,
                 enablejsapi: 1,
