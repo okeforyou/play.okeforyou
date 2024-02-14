@@ -1,12 +1,15 @@
 import {
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    signOut,
-} from 'firebase/auth'
-import nookies from 'nookies'
-import React, { createContext, useContext, useEffect, useState } from 'react'
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+} from "firebase/auth";
+import nookies from "nookies";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
-import { auth } from '../firebase'
+import { auth } from "../firebase";
 
 // User data type interface
 interface UserType {
@@ -39,6 +42,7 @@ export const AuthContextProvider = ({
         nookies.set(undefined, "token", "", { path: "/" });
       } else {
         const token = await user.getIdToken();
+
         setUser({
           email: user.email,
           uid: user.uid,
@@ -70,6 +74,11 @@ export const AuthContextProvider = ({
     return signInWithEmailAndPassword(auth, email, password);
   };
 
+  const googleSignIn = async () => {
+    const provider = new GoogleAuthProvider();
+    return await signInWithPopup(auth, provider);
+  };
+
   // Logout the user
   const logOut = async () => {
     setUser({ email: null, uid: null });
@@ -79,7 +88,7 @@ export const AuthContextProvider = ({
   // Wrap the children with the context provider
 
   return (
-    <AuthContext.Provider value={{ user, signUp, logIn, logOut }}>
+    <AuthContext.Provider value={{ user, signUp, googleSignIn, logIn, logOut }}>
       {loading ? null : children}
     </AuthContext.Provider>
   );

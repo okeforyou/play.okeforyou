@@ -1,25 +1,25 @@
-import Image from 'next/image'
-import { useRouter } from 'next/router'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { useFullscreen, usePromise, useToggle } from 'react-use'
-import YouTube, { YouTubePlayer, YouTubeProps } from 'react-youtube'
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useFullscreen, usePromise, useToggle } from "react-use";
+import YouTube, { YouTubePlayer, YouTubeProps } from "react-youtube";
 
 import {
-    ArrowUturnLeftIcon,
-    ForwardIcon,
-    PauseIcon,
-    PlayIcon,
-    SpeakerWaveIcon,
-    SpeakerXMarkIcon,
-} from '@heroicons/react/20/solid'
+  ArrowUturnLeftIcon,
+  ForwardIcon,
+  PauseIcon,
+  PlayIcon,
+  SpeakerWaveIcon,
+  SpeakerXMarkIcon,
+} from "@heroicons/react/20/solid";
 import {
-    ArrowsPointingInIcon,
-    ArrowsPointingOutIcon,
-    ExclamationTriangleIcon,
-} from '@heroicons/react/24/outline'
+  ArrowsPointingInIcon,
+  ArrowsPointingOutIcon,
+  ExclamationTriangleIcon,
+} from "@heroicons/react/24/outline";
 
-import { useAuth } from '../context/AuthContext'
-import Alert, { AlertHandler } from './Alert'
+import { useAuth } from "../context/AuthContext";
+import Alert, { AlertHandler } from "./Alert";
 
 function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
   const playerRef = useRef<YouTube>();
@@ -55,12 +55,11 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
   }
 
   const checkLogin = () => {
-    return;
-    //skip login
     if (!user.uid) {
       router.push("/login");
     }
   };
+
   useEffect(() => {
     const player = playerRef.current?.getInternalPlayer();
     if (player) {
@@ -68,11 +67,44 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
     }
   }, [videoId]);
 
+  const isEnd = async (player) => {
+    if (player && player.getCurrentTime && player.getDuration) {
+      const playState = await player.getPlayerState();
+      if (playState === YouTube.PlayerState.ENDED) {
+        return true;
+      }
+    }
+    return false;
+  };
+  const loopCheckEnd = async () => {
+    const player = playerRef.current?.internalPlayer;
+    if (await isEnd(player)) {
+      nextSong();
+    }
+  };
+
+  const isFirefox = navigator.userAgent.toLowerCase().includes("firefox");
+  useEffect(() => {
+    const intervalId =
+      playerState === YouTube.PlayerState.PLAYING &&
+      isFirefox &&
+      setInterval(() => loopCheckEnd(), 1000);
+    return () =>
+      playerState === YouTube.PlayerState.PLAYING &&
+      isFirefox &&
+      clearInterval(intervalId);
+  }, [nextSong, playerState]);
+
   const pauseVideo = async () => {
     const player = playerRef.current?.getInternalPlayer();
     if (!player) return;
-    setPlayerState(await player.getPlayerState());
+    setPlayerState(YouTube.PlayerState.PAUSED);
     await player.pauseVideo();
+    await player.getPlayerState();
+  };
+
+  const handleEnd = (e) => {
+    if (!isFirefox) nextSong();
   };
 
   // Event handler for triggering fullscreen on a user gesture
@@ -120,8 +152,8 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
               try {
                 const player = playerRef.current?.getInternalPlayer();
                 if (!player) return;
-                setPlayerState(await player.getPlayerState());
                 await player.pauseVideo();
+                setPlayerState(YouTube.PlayerState.PAUSED);
               } catch (error) {
                 console.log(error);
               }
@@ -135,8 +167,8 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
               try {
                 const player = playerRef.current?.getInternalPlayer();
                 if (!player) return;
-                setPlayerState(await player?.getPlayerState());
                 await player?.playVideo();
+                setPlayerState(YouTube.PlayerState.PLAYING);
               } catch (error) {
                 console.log(error);
               }
@@ -293,6 +325,7 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
                 ? "aspect-video cursor-zoom-in"
                 : "h-[calc(100dvh)] cursor-zoom-out"
             } `}
+            id="yt-iframe"
             iframeClassName={`w-full h-[calc(100dvh)] pointer-events-none`}
             style={{
               width: "100%",
@@ -312,11 +345,10 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
               },
             }}
             onStateChange={(ev) => updatePlayerState(ev.target)}
-            onEnd={nextSong}
+            onEnd={handleEnd}
           />
         )}
       </div>
-
       <div
         className={`flex-shrink-0 flex flex-row md:w-full p-1 items-center z-20 hover:opacity-100 ${
           UseFullScreenCss ? "opacity-0" : ""

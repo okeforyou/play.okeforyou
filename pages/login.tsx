@@ -1,8 +1,17 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 import LoginForm from "../components/LoginForm";
+import { useAuth } from "../context/AuthContext";
 
 export default function Home() {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  if (!!user.uid) {
+    router.replace("/");
+  }
+
   return (
     <>
       <Head>
