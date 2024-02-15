@@ -1,9 +1,9 @@
-import Image from 'next/image'
-import { Fragment, useState } from 'react'
-import { useQuery } from 'react-query'
+import Image from "next/image";
+import { Fragment, useState } from "react";
+import { useQuery } from "react-query";
 
-import { useKaraokeState } from '../hooks/karaoke'
-import { getArtists, getSkeletonItems, getTopArtists } from '../utils/api'
+import { useKaraokeState } from "../hooks/karaoke";
+import { getArtists, getSkeletonItems, getTopArtists } from "../utils/api";
 
 export default function ListSingerGrid({ showTab = true }) {
   const { data: topArtistsData, isLoading: isLoadTopArtists } = useQuery(
@@ -35,7 +35,7 @@ export default function ListSingerGrid({ showTab = true }) {
                 setActiveIndex(2);
               }}
             >
-              เพลงฮิต
+              มาแรง
             </button>
           </nav>
         )}

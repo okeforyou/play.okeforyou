@@ -30,7 +30,7 @@ export default function BottomNavigation() {
         onClick={() => setActiveIndex(2)}
       >
         <TrophyIcon className="w-6 h-6" />
-        <span className="btm-nav-label">เพลงฮิต</span>
+        <span className="btm-nav-label">มาแรง</span>
       </button>
       <button
         className={`text-primary shrink ${activeIndex === 3 ? "active" : ""}`}

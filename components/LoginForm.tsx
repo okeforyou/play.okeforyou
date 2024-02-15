@@ -63,7 +63,7 @@ const LoginForm = () => {
               <img src="icon-512.png" alt="icon" width={120} height={120} />
             </div>
             <h2 className="flex justify-center items-center pt-5 text-2xl">
-              Oke for You App
+              YouOke App
             </h2>
             <div className="flex items-center justify-center  pt-5 dark:bg-gray-800">
               <button

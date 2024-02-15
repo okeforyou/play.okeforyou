@@ -1,9 +1,9 @@
-import Image from 'next/image'
-import { Fragment } from 'react'
-import { useQuery } from 'react-query'
+import Image from "next/image";
+import { Fragment } from "react";
+import { useQuery } from "react-query";
 
-import { useKaraokeState } from '../hooks/karaoke'
-import { getHitSingles, getSkeletonItems } from '../utils/api'
+import { useKaraokeState } from "../hooks/karaoke";
+import { getHitSingles, getSkeletonItems } from "../utils/api";
 
 export default function ListTopicsGrid({ showTab = true }) {
   const { data, isLoading } = useQuery(["getHitSingles"], getHitSingles);
@@ -25,7 +25,7 @@ export default function ListTopicsGrid({ showTab = true }) {
               ศิลปินยอดฮิต
             </button>
             <button type="button" className="tab tab-active">
-              เพลงฮิต
+              มาแรง
             </button>
           </nav>
         )}

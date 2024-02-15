@@ -156,6 +156,12 @@ function HomePage() {
         <button
           className="btn btn-primary btn-xs gap-1 flex  flex-row 2xl:btn-sm "
           onClick={() => {
+            if (!user.uid) {
+              router.push("/login");
+
+              return;
+            }
+
             const videoIds = playlist.map((p) => p.videoId).join(",");
             const youtubeURL = `http://www.youtube.com/watch_videos?video_ids=${videoIds}`;
             window.open(youtubeURL);

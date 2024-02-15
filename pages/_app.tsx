@@ -26,11 +26,8 @@ function App({ Component, pageProps }) {
             name="viewport"
             content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=0"
           />
-          <title>Oke for You - คาราโอเกะออนไลน์บน YouTube</title>
-          <meta
-            name="title"
-            content="Oke for You - คาราโอเกะออนไลน์บน YouTube"
-          />
+          <title>YouOke - คาราโอเกะออนไลน์บน YouTube</title>
+          <meta name="title" content="YouOke - คาราโอเกะออนไลน์บน YouTube" />
           <meta
             name="description"
             content="คาราโอเกะออนไลน์ฟรี ไม่ต้องติดตั้ง ทำงานโดยตรงในเบราว์เซอร์ ใช้ได้กับอุปกรณ์หลากหลาย ฐานข้อมูลเพลงจาก Youtube ครบถ้วนและมีคุณภาพสูง "
@@ -39,7 +36,7 @@ function App({ Component, pageProps }) {
           <meta property="og:url" content="https://play.okeforyou.com/" />
           <meta
             property="og:title"
-            content="Oke for You - คาราโอเกะออนไลน์บน YouTube"
+            content="YouOke - คาราโอเกะออนไลน์บน YouTube"
           />
           <meta
             property="og:description"
@@ -51,7 +48,7 @@ function App({ Component, pageProps }) {
           <meta property="twitter:url" content="https://play.okeforyou.com/" />
           <meta
             property="twitter:title"
-            content="Oke for You - คาราโอเกะออนไลน์บน YouTube"
+            content="YouOke - คาราโอเกะออนไลน์บน YouTube"
           />
           <meta
             property="twitter:description"
