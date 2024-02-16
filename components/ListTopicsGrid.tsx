@@ -30,6 +30,9 @@ export default function ListTopicsGrid({ showTab = true }) {
           </nav>
         )}
       </div>
+      <div className="col-span-full  bg-transparent  pl-2 text-2xl">
+        เพลงใหม่มาแรง
+      </div>
       <div
         className={`relative grid grid-cols-2 xl:grid-cols-3  pt-2 gap-2 col-span-full`}
       >

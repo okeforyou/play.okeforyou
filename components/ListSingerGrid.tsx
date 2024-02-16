@@ -40,8 +40,11 @@ export default function ListSingerGrid({ showTab = true }) {
           </nav>
         )}
       </div>
+      <div className="col-span-full  bg-transparent  pl-2 text-2xl">
+        ศิลปินยอดนิยม
+      </div>
       <div
-        className={`relative grid grid-cols-4 xl:grid-cols-6  gap-2 col-span-full pt-4 pb-4`}
+        className={`relative grid grid-cols-4 xl:grid-cols-6 gap-2 col-span-full pt-2 pb-4`}
       >
         {isLoadTopArtists && (
           <>
@@ -89,7 +92,9 @@ export default function ListSingerGrid({ showTab = true }) {
           );
         })}
       </div>
-
+      <div className="col-span-full  bg-transparent p-2 pl-2 text-2xl">
+        หมวดหมู่ศิลปิน
+      </div>
       {!isLoadTopArtists && (
         <div
           className={`tabs tabs-boxed col-span-full justify-center bg-transparent relative grid grid-cols-3 xl:grid-cols-5  gap-2 col-span-full p-0`}
