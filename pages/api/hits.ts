@@ -1,7 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import axios from 'axios'
 
 import type { NextApiRequest, NextApiResponse } from "next";
+
+let cachedData; // Variable to cache the fetched data
+let cacheExpiryTime = 12 * 60 * 60 * 1000; //  milliseconds
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,9 +12,17 @@ export default async function handler(
   try {
     let songList = [];
 
-    const jooxData = await axios.get(`https://www.joox.com/th/chart/42`);
+    // Check if cached data exists and is not expired
+    if (cachedData && Date.now() - cachedData.timestamp < cacheExpiryTime) {
+      res.status(200).json(cachedData.data);
+      return;
+    }
+
+    const jooxData = await fetch(`https://www.joox.com/th/chart/128`);
+    const data = await jooxData.text();
+
     try {
-      var match = jooxData.data.match(
+      var match = data.match(
         /(?<=<script id="__NEXT_DATA__" type="application\/json">)(.*?)(?=<\/script>)/
       );
       const jsonData = JSON.parse(match[0]);
