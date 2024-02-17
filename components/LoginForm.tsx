@@ -133,7 +133,7 @@ const LoginForm = () => {
               </Link>
             </span>
           </form>
-          <div className="divider"> หรือ </div>
+          {/* <div className="divider"> หรือ </div>
           <div className="flex items-center justify-center  dark:bg-gray-800">
             <button
               onClick={handleSignInGoogle}
@@ -147,7 +147,7 @@ const LoginForm = () => {
               />
               <span>Login with Google</span>
             </button>
-          </div>
+          </div> */}
           <Link href="/">
             <a className="text-gray-400 hover:link text-xs float-right pt-2">
               ข้ามการเข้าสู่ระบบ
