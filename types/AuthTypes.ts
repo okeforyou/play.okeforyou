@@ -6,4 +6,5 @@ export interface LoginType {
 export interface RegistrationType {
   email: string;
   password: string;
+  confirmPassword: string;
 }

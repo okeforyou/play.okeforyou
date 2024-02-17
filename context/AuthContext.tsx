@@ -1,7 +1,7 @@
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
-  onAuthStateChanged,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
@@ -85,10 +85,16 @@ export const AuthContextProvider = ({
     return await signOut(auth);
   };
 
+  const resetPassword = async (email: string) => {
+    return await sendPasswordResetEmail(auth, email);
+  };
+
   // Wrap the children with the context provider
 
   return (
-    <AuthContext.Provider value={{ user, signUp, googleSignIn, logIn, logOut }}>
+    <AuthContext.Provider
+      value={{ user, signUp, googleSignIn, logIn, logOut, resetPassword }}
+    >
       {loading ? null : children}
     </AuthContext.Provider>
   );
