@@ -1,15 +1,16 @@
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 
 import {
-    ArrowLeftOnRectangleIcon,
-    ArrowRightOnRectangleIcon,
-    ChatBubbleLeftIcon,
-    MusicalNoteIcon,
-    RectangleStackIcon,
-} from '@heroicons/react/24/outline'
+  ArrowLeftOnRectangleIcon,
+  ArrowRightOnRectangleIcon,
+  ChatBubbleLeftIcon,
+  MusicalNoteIcon,
+  RectangleStackIcon,
+  TrophyIcon,
+} from "@heroicons/react/24/outline";
 
-import { useAuth } from '../context/AuthContext'
-import { useKaraokeState } from '../hooks/karaoke'
+import { useAuth } from "../context/AuthContext";
+import { useKaraokeState } from "../hooks/karaoke";
 
 export default function BottomNavigation() {
   const { activeIndex, setActiveIndex } = useKaraokeState();
@@ -24,6 +25,13 @@ export default function BottomNavigation() {
       >
         <MusicalNoteIcon className="w-6 h-6" />
         <span className="btm-nav-label">ศิลปิน</span>
+      </button>
+      <button
+        className={`text-primary  shrink ${activeIndex === 2 ? "active" : ""}`}
+        onClick={() => setActiveIndex(2)}
+      >
+        <TrophyIcon className="w-6 h-6" />
+        <span className="btm-nav-label">มาแรง</span>
       </button>
       <button
         className={`text-primary shrink ${activeIndex === 3 ? "active" : ""}`}

@@ -1,11 +1,11 @@
-import { useRouter } from 'next/router'
-import { useRef, useState } from 'react'
+import { useRouter } from "next/router";
+import { useRef, useState } from "react";
 
-import { ExclamationCircleIcon } from '@heroicons/react/24/outline'
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 
-import { useAuth } from '../context/AuthContext'
-import { LoginType } from '../types/AuthTypes'
-import Alert, { AlertHandler } from './Alert'
+import { useAuth } from "../context/AuthContext";
+import { LoginType } from "../types/AuthTypes";
+import Alert, { AlertHandler } from "./Alert";
 
 const LoginForm = () => {
   const [data, setData] = useState<LoginType>({
@@ -63,7 +63,7 @@ const LoginForm = () => {
                 type="email"
                 name="email"
                 id="email"
-                className="valid:[&:not(:placeholder-shown)]:border-primary [&:not(:placeholder-shown):not(:focus):invalid~span]:block invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-400 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 placeholder-gray-300 focus:border-primary focus:outline-none dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                className="valid:[&:not(:placeholder-shown)]:border-gray-300 [&:not(:placeholder-shown):not(:focus):invalid~span]:block invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-400 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 placeholder-gray-300 focus:border-gray-300 focus:outline-none dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                 autoComplete="off"
                 required
                 pattern="[a-z0-9._+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
@@ -91,7 +91,7 @@ const LoginForm = () => {
                 name="password"
                 id="password"
                 placeholder="••••••••"
-                className="valid:[&:not(:placeholder-shown)]:border-primary [&:not(:placeholder-shown):not(:focus):invalid~span]:block invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-400 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 placeholder-gray-300 focus:border-primary focus:outline-none focus:ring-primary dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                className="valid:[&:not(:placeholder-shown)]:border-gray-300 [&:not(:placeholder-shown):not(:focus):invalid~span]:block invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-400 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 placeholder-gray-300 focus:border-gray-300 focus:outline-none focus:ring-primary dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                 required
                 onChange={(e: any) => {
                   setData({
