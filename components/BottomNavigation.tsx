@@ -1,15 +1,16 @@
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router'
 
 import {
-  ArrowLeftOnRectangleIcon,
-  ArrowRightOnRectangleIcon,
-  MusicalNoteIcon,
-  RectangleStackIcon,
-  TrophyIcon,
-} from "@heroicons/react/24/outline";
+    ArrowLeftOnRectangleIcon,
+    ArrowRightOnRectangleIcon,
+    ChatBubbleLeftIcon,
+    MusicalNoteIcon,
+    RectangleStackIcon,
+    TrophyIcon,
+} from '@heroicons/react/24/outline'
 
-import { useAuth } from "../context/AuthContext";
-import { useKaraokeState } from "../hooks/karaoke";
+import { useAuth } from '../context/AuthContext'
+import { useKaraokeState } from '../hooks/karaoke'
 
 export default function BottomNavigation() {
   const { activeIndex, setActiveIndex } = useKaraokeState();
@@ -39,6 +40,15 @@ export default function BottomNavigation() {
         <RectangleStackIcon className="w-6 h-6" />
         <span className="btm-nav-label ">เพลย์ลิสต์</span>
       </button>
+      <a
+        className={`text-primary shrink`}
+        href="https://okeforyou.com/help"
+        target="_blank"
+        rel="noopener"
+      >
+        <ChatBubbleLeftIcon className="w-6 h-6" />
+        ช่วยเหลือ
+      </a>
       {!user.uid ? (
         <button
           title="เข้าสู่ระบบ"
