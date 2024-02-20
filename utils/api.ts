@@ -1,21 +1,13 @@
-import axios from 'axios'
+import axios from "axios";
 
-import { GetArtists, GetHitSingles, GetTopArtists } from '../types'
-import { SearchResult, VideoResponse } from '../types/invidious'
-
-const invidious = axios.create({
-  baseURL: "https://invidious.fdn.fr",
-});
+import { GetArtists, GetHitSingles, GetTopArtists } from "../types";
+import { SearchResult, VideoResponse } from "../types/invidious";
 
 export const getVideoInfo = async (videoId: string) => {
-  if (!videoId) {
-    throw new Error("Missing query key!");
-  }
-  const res = await invidious.get<VideoResponse>(
-    "/api/v1/videos/" + videoId + "?fields=recommendedVideos"
-  );
+  const res = await axios.get<VideoResponse>("/api/videos/" + videoId);
   return res.data;
 };
+
 export const getSearchResult = async ({
   q,
   page = 0,
@@ -23,14 +15,29 @@ export const getSearchResult = async ({
   type = "video",
   fields = "title,videoId,author,videoThumbnails",
 }) => {
-  if (!q) {
-    throw new Error("Missing params `q`!");
-  }
-  const res = await invidious.get<SearchResult[]>("/api/v1/search", {
+  const res = await axios.get<SearchResult>("/api/search", {
     params: { q, type, page, region, fields },
   });
   return res.data;
 };
+// export const getSearchResult = async ({
+//   q,
+//   page = 0,
+//   region = "TH",
+//   type = "video",
+//   fields = "title,videoId,author,videoThumbnails",
+// }) => {
+//   if (!q) {
+//     throw new Error("Missing params `q`!");
+//   }
+//   const res = await invidious.get<SearchResult[]>("/api/v1/search", {
+//     params: { q, type, page, region, fields },
+//     headers: {
+//       "Access-Control-Allow-Origin": "*",
+//     },
+//   });
+//   return res.data;
+// };
 export const getSkeletonItems = (length: number) =>
   Array.from({ length }).map((_, i) => i);
 
