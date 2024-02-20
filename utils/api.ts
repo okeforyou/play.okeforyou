@@ -15,7 +15,7 @@ export const getSearchResult = async ({
   type = "video",
   fields = "title,videoId,author,videoThumbnails",
 }) => {
-  const res = await axios.get<SearchResult>("/api/search", {
+  const res = await axios.get<SearchResult[]>("/api/search", {
     params: { q, type, page, region, fields },
   });
   return res.data;
