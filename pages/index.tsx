@@ -1,42 +1,42 @@
 import {
-  arrayUnion,
-  collection,
-  doc,
-  getDocs,
-  query,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-import dynamic from "next/dynamic";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { DebounceInput } from "react-debounce-input";
+    arrayUnion,
+    collection,
+    doc,
+    getDocs,
+    query,
+    updateDoc,
+    where,
+} from 'firebase/firestore'
+import dynamic from 'next/dynamic'
+import Image from 'next/image'
+import { useEffect, useRef, useState } from 'react'
+import { DebounceInput } from 'react-debounce-input'
 
 import {
-  BarsArrowUpIcon,
-  ListBulletIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/20/solid";
+    BarsArrowUpIcon,
+    ListBulletIcon,
+    MagnifyingGlassIcon,
+} from '@heroicons/react/20/solid'
 import {
-  BookmarkIcon,
-  CheckCircleIcon,
-  ChevronRightIcon,
-  PlusIcon,
-  RssIcon,
-} from "@heroicons/react/24/outline";
+    BookmarkIcon,
+    CheckCircleIcon,
+    ChevronRightIcon,
+    PlusIcon,
+    RssIcon,
+} from '@heroicons/react/24/outline'
 
-import Alert, { AlertHandler } from "../components/Alert";
-import BottomNavigation from "../components/BottomNavigation";
-import ListPlaylistsGrid from "../components/ListPlaylistsGrid";
-import Modal, { ModalHandler } from "../components/Modal";
-import SearchResultGrid from "../components/SearchResultGrid";
-import VideoHorizontalCard from "../components/VideoHorizontalCard";
-import YoutubePlayer from "../components/YoutubePlayer";
-import { useAuth } from "../context/AuthContext";
-import { database } from "../firebase";
-import { useKaraokeState } from "../hooks/karaoke";
-import { useMyPlaylistState } from "../hooks/myPlaylist";
-import { RecommendedVideo, SearchResult } from "../types/invidious";
+import Alert, { AlertHandler } from '../components/Alert'
+import BottomNavigation from '../components/BottomNavigation'
+import ListPlaylistsGrid from '../components/ListPlaylistsGrid'
+import Modal, { ModalHandler } from '../components/Modal'
+import SearchResultGrid from '../components/SearchResultGrid'
+import VideoHorizontalCard from '../components/VideoHorizontalCard'
+import YoutubePlayer from '../components/YoutubePlayer'
+import { useAuth } from '../context/AuthContext'
+import { database } from '../firebase'
+import { useKaraokeState } from '../hooks/karaoke'
+import { useMyPlaylistState } from '../hooks/myPlaylist'
+import { RecommendedVideo, SearchResult } from '../types/invidious'
 
 const ListSingerGrid = dynamic(() => import("../components/ListSingerGrid"), {
   loading: () => <div>Loading...</div>,
@@ -235,16 +235,16 @@ function HomePage() {
                 </div>
                 {/* END Search Input */}
                 {/* START Karaoke Switch */}
-                <div className="form-control">
-                  <label className="cursor-pointer label flex-col lg:flex-row gap-1">
+                <div className="form-control w-20 lg:w-24 2xl:w-32">
+                  <label className="cursor-pointer label flex-col lg:flex-row gap-1 justify-start">
                     <input
                       type="checkbox"
                       className="toggle toggle-primary toggle-sm"
                       checked={isKaraoke}
                       onChange={(e) => setIsKaraoke(e.target.checked)}
                     />
-                    <span className="label-text text-primary-content ml-2 text-xs 2xl:text-xl">
-                      KARAOKE
+                    <span className="label-text text-primary-content ml-2 text-xs 2xl:text-xl ">
+                      {isKaraoke ? "คาราโอเกะ" : "เพลง"}
                     </span>
                   </label>
                 </div>
