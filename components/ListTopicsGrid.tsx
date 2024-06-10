@@ -1,16 +1,27 @@
-import Image from "next/image";
-import { Fragment } from "react";
-import { useQuery } from "react-query";
+import Image from 'next/image'
+import { Fragment, useState } from 'react'
+import { useQuery } from 'react-query'
 
-import { useKaraokeState } from "../hooks/karaoke";
-import { getHitSingles, getSkeletonItems } from "../utils/api";
+import { useKaraokeState } from '../hooks/karaoke'
+import { getHitSingles, getSkeletonItems } from '../utils/api'
+import JooxError from './JooxError'
 
 export default function ListTopicsGrid({ showTab = true }) {
-  const { data, isLoading } = useQuery(["getHitSingles"], getHitSingles);
+  const { data, isLoading } = useQuery(["getHitSingles"], getHitSingles, {
+    onError: () => {
+      setIsError(true);
+    },
+    onSuccess: (data) => {
+      setIsError(data.singles.length === 0);
+    },
+  });
   const { setActiveIndex, setSearchTerm } = useKaraokeState();
   const { singles: topics } = data || {};
+  const [isError, setIsError] = useState(false || topics?.length === 0);
 
-  return (
+  return isError ? (
+    <JooxError />
+  ) : (
     <>
       <div className="col-span-full  bg-transparent pt-2">
         {showTab && (

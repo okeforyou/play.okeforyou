@@ -28,7 +28,7 @@ export default async function handler(
       const jsonData = JSON.parse(match[0]);
       songList = jsonData.props.pageProps.trackList.tracks.items;
     } catch (error) {
-      console.log(error);
+      return res.status(500).json(error);
     }
 
     const topics = {
