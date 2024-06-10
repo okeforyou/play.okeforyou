@@ -1,26 +1,41 @@
-import Image from "next/image";
-import { Fragment, useState } from "react";
-import { useQuery } from "react-query";
+import Image from 'next/image'
+import { Fragment, useState } from 'react'
+import { useQuery } from 'react-query'
 
-import { useKaraokeState } from "../hooks/karaoke";
-import { getArtists, getSkeletonItems, getTopArtists } from "../utils/api";
+import { useKaraokeState } from '../hooks/karaoke'
+import { getArtists, getSkeletonItems, getTopArtists } from '../utils/api'
+import JooxError from './JooxError'
 
 export default function ListSingerGrid({ showTab = true }) {
   const { data: topArtistsData, isLoading: isLoadTopArtists } = useQuery(
     ["getTopArtists"],
-    getTopArtists
+    getTopArtists,
+    {
+      onError: () => {
+        setIsError(true);
+      },
+    }
   );
 
   const [tagId, setTagId] = useState("193");
-  const { data: artists, isLoading } = useQuery(["getArtists", tagId], () =>
-    getArtists(tagId)
+  const { data: artists, isLoading } = useQuery(
+    ["getArtists", tagId],
+    () => getArtists(tagId),
+    {
+      onError: () => {
+        setIsError(true);
+      },
+    }
   );
   const { setSearchTerm } = useKaraokeState();
   const { artist: topArtists } = topArtistsData || {};
   const { artist } = artists || {};
   const { setActiveIndex } = useKaraokeState();
+  const [isError, setIsError] = useState(false);
 
-  return (
+  return isError ? (
+    <JooxError />
+  ) : (
     <>
       <div className="col-span-full  bg-transparent pt-2">
         {showTab && (
@@ -93,13 +108,13 @@ export default function ListSingerGrid({ showTab = true }) {
         })}
       </div>
       <div className="col-span-full  bg-transparent p-2 pl-2 text-2xl">
-        หมวดหมู่ศิลปิน
+        หมวดหมู่ศิลปิน {isError}
       </div>
       {!isLoadTopArtists && (
         <div
           className={`tabs tabs-boxed col-span-full justify-center bg-transparent relative grid grid-cols-3 xl:grid-cols-5  gap-2 col-span-full p-0`}
         >
-          {topArtistsData.artistCategories.map((cat) => {
+          {topArtistsData?.artistCategories.map((cat) => {
             const names = cat.tag_name.replace("/ ", "").split(" ");
 
             const firstword = names[0] || "";

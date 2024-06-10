@@ -19,6 +19,7 @@ export default async function handler(
 
     try {
       const jooxApiData = await jooxApi.json();
+
       artistList = jooxApiData.artistList.artists.items;
 
       const artistCategoriesData = jooxApiData.artistCategories;
@@ -46,7 +47,8 @@ export default async function handler(
         });
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
+      return res.status(500).json(error);
     }
 
     const artists = {
