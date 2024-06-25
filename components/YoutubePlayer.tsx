@@ -55,9 +55,9 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
   }
 
   const checkLogin = () => {
-    if (!user.uid) {
-      router.push("/login");
-    }
+    // if (!user.uid) {
+    //   router.push("/login");
+    // }
   };
   useEffect(() => {
     const player = playerRef.current?.getInternalPlayer();
@@ -118,7 +118,8 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
               try {
                 const player = playerRef.current?.getInternalPlayer();
                 if (!player) return;
-                setPlayerState(await player.getPlayerState());
+
+                setPlayerState(YouTube.PlayerState.PAUSED);
                 await player.pauseVideo();
               } catch (error) {
                 console.log(error);
@@ -132,8 +133,10 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
               checkLogin();
               try {
                 const player = playerRef.current?.getInternalPlayer();
+
                 if (!player) return;
-                setPlayerState(await player?.getPlayerState());
+                setPlayerState(YouTube.PlayerState.PLAYING);
+
                 await player?.playVideo();
               } catch (error) {
                 console.log(error);
@@ -314,7 +317,6 @@ function YoutubePlayer({ videoId, nextSong, className = "", extra = null }) {
           />
         )}
       </div>
-
       <div
         className={`flex-shrink-0 flex flex-row md:w-full p-1 items-center z-20 hover:opacity-100 ${
           UseFullScreenCss ? "opacity-0" : ""
