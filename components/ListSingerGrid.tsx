@@ -1,16 +1,18 @@
-import Image from 'next/image'
-import { Fragment, useState } from 'react'
-import { useQuery } from 'react-query'
+import Image from "next/image";
+import { Fragment, useState } from "react";
+import { useQuery } from "react-query";
 
-import { useKaraokeState } from '../hooks/karaoke'
-import { getArtists, getSkeletonItems, getTopArtists } from '../utils/api'
-import JooxError from './JooxError'
+import { useKaraokeState } from "../hooks/karaoke";
+import { getArtists, getSkeletonItems, getTopArtists } from "../utils/api";
+import JooxError from "./JooxError";
 
 export default function ListSingerGrid({ showTab = true }) {
   const { data: topArtistsData, isLoading: isLoadTopArtists } = useQuery(
     ["getTopArtists"],
     getTopArtists,
     {
+      retry: false,
+      refetchInterval: 0,
       onError: () => {
         setIsError(true);
       },
@@ -22,6 +24,8 @@ export default function ListSingerGrid({ showTab = true }) {
     ["getArtists", tagId],
     () => getArtists(tagId),
     {
+      retry: false,
+      refetchInterval: 0,
       onError: () => {
         setIsError(true);
       },

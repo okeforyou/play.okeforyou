@@ -1,13 +1,15 @@
-import Image from 'next/image'
-import { Fragment, useState } from 'react'
-import { useQuery } from 'react-query'
+import Image from "next/image";
+import { Fragment, useState } from "react";
+import { useQuery } from "react-query";
 
-import { useKaraokeState } from '../hooks/karaoke'
-import { getHitSingles, getSkeletonItems } from '../utils/api'
-import JooxError from './JooxError'
+import { useKaraokeState } from "../hooks/karaoke";
+import { getHitSingles, getSkeletonItems } from "../utils/api";
+import JooxError from "./JooxError";
 
 export default function ListTopicsGrid({ showTab = true }) {
   const { data, isLoading } = useQuery(["getHitSingles"], getHitSingles, {
+    retry: false,
+    refetchInterval: 0,
     onError: () => {
       setIsError(true);
     },

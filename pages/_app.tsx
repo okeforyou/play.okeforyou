@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { Analytics } from "@vercel/analytics/react";
 
 import GoogleAnalytics from "../components/GoogleAnalytics";
+import { AdsProvider } from "../context/AdsContext";
 import { AuthContextProvider } from "../context/AuthContext";
 
 // Create a client
@@ -27,10 +28,7 @@ function App({ Component, pageProps }) {
             content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=0"
           />
           <title>YouOke - คาราโอเกะออนไลน์บน YouTube</title>
-          <meta
-            name="title"
-            content="YouOke - คาราโอเกะออนไลน์บน YouTube"
-          />
+          <meta name="title" content="YouOke - คาราโอเกะออนไลน์บน YouTube" />
           <meta
             name="description"
             content="คาราโอเกะออนไลน์ฟรี ไม่ต้องติดตั้ง ทำงานโดยตรงในเบราว์เซอร์ ใช้ได้กับอุปกรณ์หลากหลาย ฐานข้อมูลเพลงจาก Youtube ครบถ้วนและมีคุณภาพสูง "
@@ -72,7 +70,9 @@ function App({ Component, pageProps }) {
           </>
         )}
         <QueryClientProvider client={queryClient}>
-          <Component {...pageProps} />
+          <AdsProvider>
+            <Component {...pageProps} />
+          </AdsProvider>
           {/* <ReactQueryDevtools /> */}
         </QueryClientProvider>
         <Analytics />
