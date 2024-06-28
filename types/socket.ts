@@ -19,6 +19,7 @@ export enum ACTION {
   REPLAY,
   MUTE,
   UNMUTE,
+  MONITOR_END_VIDEO,
 }
 
 export interface SocketData {

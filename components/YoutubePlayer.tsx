@@ -92,7 +92,12 @@ function YoutubePlayer({
     socket.emit("joinRoom", _room);
 
     socket.on("message", (data) => {
-      if (!isMoniter) return;
+      if (!isMoniter) {
+        if (data.action == ACTION.MONITOR_END_VIDEO) {
+          handleMonitorEnd();
+        }
+        return;
+      }
 
       switch (data.action) {
         case ACTION.PLAY:
@@ -117,6 +122,7 @@ function YoutubePlayer({
         case ACTION.UNMUTE:
           handleUnMute();
           break;
+
         default:
           break;
       }
@@ -127,6 +133,13 @@ function YoutubePlayer({
   }, []);
 
   const sendMessage = (act = ACTION.PLAY) => {
+    if (isMoniter && act == ACTION.MONITOR_END_VIDEO) {
+      socket.emit("message", {
+        room: router.query?.room as string,
+        action: { action: act },
+      });
+      return;
+    }
     if (!room || isMoniter || !isLogin) return;
 
     let action: SocketData = { action: act };
@@ -141,6 +154,13 @@ function YoutubePlayer({
     }
 
     socket.emit("message", { room, action });
+  };
+
+  const handleMonitorEnd = () => {
+    if (!isMoniter) {
+      sendMessage(ACTION.NEXT_SONG);
+      nextSong();
+    }
   };
 
   useEffect(() => {
@@ -483,8 +503,12 @@ function YoutubePlayer({
               updatePlayerState(ev.target);
             }}
             onEnd={() => {
-              sendMessage(ACTION.NEXT_SONG);
-              nextSong();
+              if (isMoniter) {
+                sendMessage(ACTION.MONITOR_END_VIDEO);
+              } else {
+                sendMessage(ACTION.NEXT_SONG);
+                nextSong();
+              }
             }}
           />
         )}
