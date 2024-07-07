@@ -15,6 +15,12 @@ const SocketHandler = (req, res) => {
         // console.log(`User joined room: ${room}`);
       });
 
+      socket.on("leaveRoom", (room) => {
+        // console.log("leaveRoom", room);
+        socket.leave(room);
+        // console.log(`User leaveRoom room: ${room}`);
+      });
+
       socket.on("message", (data) => {
         const { room, action } = data;
         io.to(room).emit("message", action);

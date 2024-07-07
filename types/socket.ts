@@ -1,5 +1,6 @@
 export interface ClientToServerEvents {
   joinRoom: (room: string) => void;
+  leaveRoom: (room: string) => void;
   message: (data: { room: string; action: SocketData }) => void;
 }
 
@@ -12,17 +13,20 @@ export interface InterServerEvents {
 }
 
 export enum ACTION {
+  REMOTE_JOIN,
   SET_SONG,
-  PLAY = 1,
+  SET_PLAYLIST,
+  MONITOR_END_VIDEO,
+  PLAY,
   PAUSED,
   NEXT_SONG,
   REPLAY,
   MUTE,
   UNMUTE,
-  MONITOR_END_VIDEO,
 }
 
 export interface SocketData {
   action: ACTION;
   videoId?: string;
+  playlist?: any;
 }

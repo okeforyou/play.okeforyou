@@ -14,15 +14,14 @@ import {
   SpeakerXMarkIcon,
 } from "@heroicons/react/20/solid";
 import {
-  ArrowDownLeftIcon,
   ArrowsPointingInIcon,
   ArrowsPointingOutIcon,
   ExclamationTriangleIcon,
   TvIcon,
 } from "@heroicons/react/24/outline";
-import { DeviceTabletIcon } from "@heroicons/react/24/solid";
 
 import { useAuth } from "../context/AuthContext";
+import useIsMobile from "../hooks/isMobile";
 import { useKaraokeState } from "../hooks/karaoke";
 import { useRoomState } from "../hooks/room";
 import { ACTION, SocketData } from "../types/socket";
@@ -57,15 +56,19 @@ function YoutubePlayer({
   const [isRemote, setIsRemote] = useState<boolean>(false);
 
   const { playlist } = useKaraokeState();
-  const { room } = useRoomState();
+  const { room, setRoom } = useRoomState();
+  const isMobile = useIsMobile();
 
   const [isOpenMonitor, setIsOpenMonitor] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isShowAds, setIsShowAds] = useState(false);
   const [videoCount, setVideoCount] = useState<number>(0);
+  const [inputRoomId, setInputRoomId] = useState("");
+  const [monitorPlaylist, setMonitorPlaylist] = useState([]);
 
   const mounted = usePromise();
 
+  const UseFullScreenCss = isFullScreenIphone;
   const isIOS =
     /iPad|iPhone/i.test(navigator.userAgent) ||
     (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
@@ -88,13 +91,19 @@ function YoutubePlayer({
 
   useEffect(() => {
     // Create a socket connection
-    const _room = isMoniter ? (router.query?.room as string) || "" : room;
+    const _room = isMoniter ? (router.query?.room as string) || room : room;
+
     socket.emit("joinRoom", _room);
 
     socket.on("message", (data) => {
+      console.log(data);
+
       if (!isMoniter) {
         if (data.action == ACTION.MONITOR_END_VIDEO) {
           handleMonitorEnd();
+          // if (playlist > data.playlist) {
+          //   //TODO: set play list from monitor
+          // }
         }
         return;
       }
@@ -123,6 +132,9 @@ function YoutubePlayer({
           handleUnMute();
           break;
 
+        case ACTION.SET_PLAYLIST:
+          setMonitorPlaylist(data.playlist);
+          break;
         default:
           break;
       }
@@ -132,15 +144,16 @@ function YoutubePlayer({
     };
   }, []);
 
-  const sendMessage = (act = ACTION.PLAY) => {
+  const sendMessage = (act = ACTION.PLAY, _room?: string) => {
+    const roomId = _room || room;
     if (isMoniter && act == ACTION.MONITOR_END_VIDEO) {
       socket.emit("message", {
         room: router.query?.room as string,
-        action: { action: act },
+        action: { action: act, playlist: monitorPlaylist },
       });
       return;
     }
-    if (!room || isMoniter || !isLogin) return;
+    if (!roomId || isMoniter || !isLogin) return;
 
     let action: SocketData = { action: act };
 
@@ -151,9 +164,11 @@ function YoutubePlayer({
     if (act === ACTION.NEXT_SONG) {
       if (playlist.length > 0) action.videoId = playlist[0].videoId;
       else action.videoId = "";
+    } else if (act === ACTION.SET_PLAYLIST) {
+      action.playlist = playlist;
     }
 
-    socket.emit("message", { room, action });
+    socket.emit("message", { room: roomId, action });
   };
 
   const handleMonitorEnd = () => {
@@ -162,6 +177,10 @@ function YoutubePlayer({
       nextSong();
     }
   };
+
+  useEffect(() => {
+    if (!isMoniter) sendMessage(ACTION.SET_PLAYLIST);
+  }, [playlist]);
 
   useEffect(() => {
     if (!isLogin && videoCount % 3 == 0) {
@@ -339,7 +358,90 @@ function YoutubePlayer({
     [nextSong]
   );
 
-  const UseFullScreenCss = isFullScreenIphone;
+  const RemoteComponent = () => {
+    return (
+      isLogin &&
+      !isMoniter && (
+        <div
+          className={`${
+            isRemote
+              ? " w-full aspect-video  top-0 right-0 "
+              : "w-16 h-16  top-5 right-5  drop-shadow-md rounded-full "
+          } bg-primary text-white  z-2 left-auto
+    flex items-center justify-center  transition-all duration-50 ${
+      !isRemote && playerState === PlayerStates.PLAYING ? "opacity-0" : ""
+    }`}
+          style={{
+            zIndex: 2,
+            position: "absolute",
+          }}
+        >
+          <div className="relative">
+            {isRemote && (
+              <div className="absolute inset-0 flex items-center justify-center  text-xl ">
+                {isMobile ? (
+                  <div className="text-base flex space-y-4 flex-col text-center">
+                    <div>
+                      คัดลอก URL เพื่อเปิดบน Google Chrome บนหน้าจอที่ 2<br />
+                      <span className="font-bold">
+                        https://play.okeforyou.com/monitor
+                      </span>
+                    </div>
+                    <div className="relative">
+                      <input
+                        id="room-id"
+                        className="py-3 px-4 pt-4 block w-full text-black bg-gray-100 rounded-lg text-sm disabled:opacity-50 border-0 disabled:pointer-events-none"
+                        placeholder="กรอกเลขห้อง"
+                        value={inputRoomId}
+                        onChange={(e) => setInputRoomId(e.target.value)}
+                      />
+                      <button
+                        className="absolute right-2 top-2 py-1 px-3 text-white rounded-lg bg-primary"
+                        onClick={() => {
+                          socket.emit("leaveRoom", room);
+                          setRoom(inputRoomId);
+                          socket.emit("joinRoom", inputRoomId);
+                          sendMessage(ACTION.REMOTE_JOIN, inputRoomId);
+                        }}
+                      >
+                        ยืนยัน
+                      </button>
+                    </div>
+                    <div className="text-sm text-red-300">
+                      รองรับการใช้งานผ่านทุกอุปกรณ์ที่มี Google Chrome
+                    </div>
+                  </div>
+                ) : (
+                  <a
+                    href={`/monitor?room=${room}`}
+                    target="_blank"
+                    className="flex flex-col items-center justify-center text-center cursor-pointer "
+                  >
+                    <TvIcon className="w-10 h-10" />
+                    {`เปิดห้อง: ${room}`}
+                  </a>
+                )}
+              </div>
+            )}
+            <div
+              className={`  cursor-pointer   ${
+                isRemote ? "absolute top-5 right-5  " : ""
+              }  flex flex-col items-center justify-center w-16 h-16 text-center   `}
+              onClick={() => {
+                setIsRemote(!isRemote);
+                handlePause();
+              }}
+            >
+              <TvIcon
+                className={`w-8 h-8 ${isRemote ? "opacity-0 hidden" : ""}`}
+              />
+              <div className="text-xs">{isRemote && "ปิด"} 2 หน้าจอ</div>
+            </div>
+          </div>
+        </div>
+      )
+    );
+  };
 
   return (
     <div
@@ -379,56 +481,7 @@ function YoutubePlayer({
           icon={<ExclamationTriangleIcon />}
         />
       </span>
-      {isLogin && !isMoniter && (
-        <div
-          className={`${
-            isRemote
-              ? " w-full aspect-video  top-0 right-0 "
-              : "w-16 h-16  top-5 right-5  drop-shadow-md rounded-full "
-          } bg-primary text-white  z-2 left-auto
-          flex items-center justify-center  transition-all duration-50 ${
-            !isRemote && playerState === PlayerStates.PLAYING ? "opacity-0" : ""
-          }`}
-          style={{
-            zIndex: 2,
-            position: "absolute",
-          }}
-        >
-          <div className="relative">
-            {isRemote && (
-              <div className="absolute inset-0 flex items-center justify-center  text-xl">
-                <a
-                  href={`/monitor?room=${room}`}
-                  target="_blank"
-                  className="flex flex-col items-center justify-center text-center cursor-pointer "
-                >
-                  <TvIcon className="w-10 h-10" />
-                  {room}
-                </a>
-              </div>
-            )}
-            <div
-              className={`  cursor-pointer   ${
-                isRemote ? "absolute top-5 right-5  " : ""
-              }  flex items-center justify-center w-16 h-16 `}
-              onClick={() => {
-                setIsRemote(!isRemote);
-                handlePause();
-              }}
-            >
-              <ArrowDownLeftIcon
-                className={`w-10 h-10  ${!isRemote ? "opacity-0 hidden" : ""}`}
-              />
-              <DeviceTabletIcon
-                className={`rotate-180  w-10 h-10 ${
-                  isRemote ? "opacity-0 hidden" : ""
-                }`}
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
+      {RemoteComponent()}
       {isMoniter && !isOpenMonitor && (
         <div
           className={` w-full aspect-video   bg-primary text-white  z-2 left-auto
@@ -446,7 +499,7 @@ function YoutubePlayer({
                 handlePlay();
               }}
             >
-              เปิดจอ
+              กดเพื่อเปิดหน้าจอ
             </div>
           </div>
         </div>
