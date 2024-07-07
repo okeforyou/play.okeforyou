@@ -235,7 +235,7 @@ function HomePage() {
       <main className="bg-base-300 h-full">
         <div className="relative flex flex-col sm:flex-row h-screen overflow-hidden">
           {/* START Recommend Videos List */}
-          <div className="order-2 sm:order-1 flex flex-col h-full w-full overflow-hidden">
+          <div className="order-2 sm:order-1 flex flex-col h-full w-full overflow-hidden border-gray-300 sm:border-solid border-r border-none">
             <div className="flex flex-col h-full overflow-hidden relative">
               {/* START Search Bar */}
               <div className="flex flex-row gap-2 p-1 justify-between items-center bg-primary">
@@ -436,6 +436,7 @@ function HomePage() {
 
             <BottomNavigation />
           </div>
+
           {/* END Recommend Videos List */}
           {/* Video Player */}
           <div className="relative order-1 sm:order-2 w-full flex flex-row sm:flex-col flex-grow flex-shrink-0 sm:max-w-[50vw] lg:max-w-[50vw] 2xl:max-w-[50vw] sm:min-w-[400px] sm:h-screen overflow-hidden">

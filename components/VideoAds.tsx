@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
+import { ChevronRightIcon } from "@heroicons/react/24/solid";
+
 import { useAds } from "../context/AdsContext";
 import { Ad } from "../services/adsServices";
 
@@ -16,16 +18,6 @@ const VideoAds: React.FC = () => {
       const randomAd = data[Math.floor(Math.random() * data.length)];
       setCurrentAd(randomAd);
       setShowAd(true);
-
-      if (randomAd.videoUrl) {
-      } else {
-        // If the ad is an image, set a timeout to switch after 5 seconds
-        const timeout = setTimeout(() => {
-          setShowAd(false);
-        }, 5000);
-
-        return () => clearTimeout(timeout); // Cleanup timeout on component unmount
-      }
     }
   }, [_data, isLoading]);
 
@@ -63,19 +55,37 @@ const VideoAds: React.FC = () => {
         {currentAd && (
           <div
             key={currentAd.linkAdsUrl}
-            className="transition-opacity dsuration-500 ease-in-out"
-            onClick={() => window.open(currentAd.linkAdsUrl, "_blank")}
+            className="transition-opacity dsuration-500 ease-in-out relative"
           >
+            {!!currentAd.imageUrl && (
+              <div
+                style={{
+                  top: -10,
+                  right: -5,
+                  zIndex: 20,
+                  lineHeight: "1.75rem",
+                }}
+                className="h-6 w-6 text-2xl block outline-none focus:outline-none float-right bg-white cursor-pointer 
+             rounded-full align-middle text-center absolute drop-shadow-md"
+                onClick={(e) => {
+                  setShowAd(false);
+                }}
+              >
+                ×
+              </div>
+            )}
             <a
               href={currentAd.linkAdsUrl}
               target="_blank"
               rel="noopener noreferrer"
+              className="relative"
+              onClick={() => window.open(currentAd.linkAdsUrl, "_blank")}
             >
               {currentAd.imageUrl && (
                 <img
                   src={currentAd.imageUrl}
                   alt={currentAd.text}
-                  className="object-contain h-96"
+                  className="object-contain h-96 rounded-lg"
                 />
               )}
               {currentAd.videoUrl && (
@@ -87,6 +97,33 @@ const VideoAds: React.FC = () => {
               {!currentAd.imageUrl && !currentAd.videoUrl && (
                 <p>{currentAd.text}</p>
               )}
+
+              <div
+                style={{
+                  bottom: -12,
+                  zIndex: 20,
+                }}
+                className="flex h-12  w-full absolute justify-center "
+                onClick={(e) => {
+                  setShowAd(false);
+                }}
+              >
+                <div
+                  className="text-2xl bg-white cursor-pointer  
+            rounded-full  text-center absolute drop-shadow-md p-2 px-4"
+                  onClick={(e) => {
+                    setShowAd(false);
+                  }}
+                >
+                  ช้อปเลย
+                  <span
+                    style={{ marginLeft: 12 }}
+                    className="h-8 w-8 inline-flex text-white text-2xl bg-black rounded-full align-middle text-center items-center justify-center "
+                  >
+                    <ChevronRightIcon className="h-6 w-6 " />
+                  </span>
+                </div>
+              </div>
             </a>
           </div>
         )}

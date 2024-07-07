@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useAds } from "../context/AdsContext";
 import { Ad } from "../services/adsServices";
 
+const MINUTES = 1;
+
 const BottomAds: React.FC = () => {
   const { data: _data, error, isLoading } = useAds();
   const [currentAd, setCurrentAd] = useState<Ad | null>(null);
@@ -14,7 +16,7 @@ const BottomAds: React.FC = () => {
 
       const interval = setInterval(() => {
         setCurrentAd(data[Math.floor(Math.random() * data.length)]);
-      }, 5000);
+      }, MINUTES * 60 * 1000);
 
       return () => clearInterval(interval); // Cleanup interval on component unmount
     }
@@ -24,11 +26,11 @@ const BottomAds: React.FC = () => {
   if (error) return <div></div>;
 
   return (
-    <div className="flex  items-center max-h-24x drop-shadow-md">
+    <div className="flex  items-center max-h-24x bg-gray-100">
       {currentAd && (
         <div
           key={currentAd.linkAdsUrl}
-          className="transition-opacity duration-500 ease-in-out"
+          className="transition-opacity duration-500 ease-in-out p-2"
         >
           <a
             href={currentAd.linkAdsUrl}
