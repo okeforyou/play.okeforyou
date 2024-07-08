@@ -6,6 +6,7 @@ import { CheckCircleIcon, HandThumbUpIcon } from "@heroicons/react/24/outline";
 import Alert, { AlertHandler } from "../components/Alert";
 import YoutubePlayer from "../components/YoutubePlayer";
 import { useAuth } from "../context/AuthContext";
+import { useKaraokeState } from "../hooks/karaoke";
 import { useRoomState } from "../hooks/room";
 import { ACTION } from "../types/socket";
 import { socket } from "../utils/socket";
@@ -13,8 +14,10 @@ import { socket } from "../utils/socket";
 const Monitor = () => {
   const router = useRouter();
   const { room } = router.query;
-  const [videoId, setVideoId] = useState<string>("");
   const alertRef = useRef<AlertHandler>(null);
+
+  const { playlist, curVideoId, setPlaylist, setCurVideoId } =
+    useKaraokeState();
 
   const { user } = useAuth();
   const { room: roomOfMonitor } = useRoomState();
@@ -29,7 +32,7 @@ const Monitor = () => {
     }
 
     socket.on("message", (data) => {
-      if (data?.videoId !== undefined) setVideoId(data?.videoId);
+      if (data?.videoId !== undefined) setCurVideoId(data?.videoId);
 
       if (!room) {
         switch (data.action) {
@@ -42,6 +45,21 @@ const Monitor = () => {
       }
     });
   }, [room]);
+
+  useEffect(() => {
+    if (playlist?.length && !curVideoId) {
+      // playing first video
+      const [video, ...newPlaylist] = playlist;
+      setCurVideoId(video.videoId);
+
+      socket.emit("message", {
+        room: router.query?.room as string,
+        action: { action: ACTION.SET_PLAYLIST_FROM_TV, playlist: newPlaylist },
+      });
+      // then remove it from playlist
+      setPlaylist(newPlaylist);
+    }
+  }, [playlist, curVideoId]);
 
   return (
     <>
@@ -57,8 +75,10 @@ const Monitor = () => {
       {!!room ? (
         <div>
           <YoutubePlayer
-            videoId={videoId}
-            nextSong={() => {}}
+            videoId={curVideoId}
+            nextSong={() => {
+              setCurVideoId("");
+            }}
             className="flex flex-col flex-1 sm:flex-grow-0"
             isMoniter
           />

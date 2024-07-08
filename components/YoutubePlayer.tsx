@@ -55,7 +55,8 @@ function YoutubePlayer({
   const [isIphone, setIsIphone] = useState<boolean>(false);
   const [isRemote, setIsRemote] = useState<boolean>(false);
 
-  const { playlist } = useKaraokeState();
+  const { playlist, curVideoId, setPlaylist } = useKaraokeState();
+
   const { room, setRoom } = useRoomState();
   const isMobile = useIsMobile();
 
@@ -64,7 +65,6 @@ function YoutubePlayer({
   const [isShowAds, setIsShowAds] = useState(false);
   const [videoCount, setVideoCount] = useState<number>(0);
   const [inputRoomId, setInputRoomId] = useState("");
-  const [monitorPlaylist, setMonitorPlaylist] = useState([]);
 
   const mounted = usePromise();
 
@@ -85,7 +85,6 @@ function YoutubePlayer({
   }
 
   useEffect(() => {
-    sendMessage(ACTION.SET_SONG);
     if (!!videoId) setVideoCount(videoCount + 1);
   }, [videoId]);
 
@@ -96,18 +95,15 @@ function YoutubePlayer({
     socket.emit("joinRoom", _room);
 
     socket.on("message", (data) => {
-      console.log(data);
-
+      //remote
       if (!isMoniter) {
-        if (data.action == ACTION.MONITOR_END_VIDEO) {
-          handleMonitorEnd();
-          // if (playlist > data.playlist) {
-          //   //TODO: set play list from monitor
-          // }
+        if (data.action == ACTION.SET_PLAYLIST_FROM_TV) {
+          setPlaylist(data.playlist);
         }
         return;
       }
 
+      //TV
       switch (data.action) {
         case ACTION.PLAY:
           handlePlay();
@@ -122,6 +118,7 @@ function YoutubePlayer({
           break;
 
         case ACTION.NEXT_SONG:
+          nextSong();
           break;
 
         case ACTION.MUTE:
@@ -133,7 +130,7 @@ function YoutubePlayer({
           break;
 
         case ACTION.SET_PLAYLIST:
-          setMonitorPlaylist(data.playlist);
+          setPlaylist(data.playlist);
           break;
         default:
           break;
@@ -146,41 +143,21 @@ function YoutubePlayer({
 
   const sendMessage = (act = ACTION.PLAY, _room?: string) => {
     const roomId = _room || room;
-    if (isMoniter && act == ACTION.MONITOR_END_VIDEO) {
-      socket.emit("message", {
-        room: router.query?.room as string,
-        action: { action: act, playlist: monitorPlaylist },
-      });
-      return;
-    }
+
     if (!roomId || isMoniter || !isLogin) return;
 
     let action: SocketData = { action: act };
 
     if ([ACTION.PLAY, ACTION.PAUSED, ACTION.SET_SONG].includes(act)) {
-      action.videoId = videoId;
+      action.videoId = curVideoId;
     }
 
-    if (act === ACTION.NEXT_SONG) {
-      if (playlist.length > 0) action.videoId = playlist[0].videoId;
-      else action.videoId = "";
-    } else if (act === ACTION.SET_PLAYLIST) {
+    if (act === ACTION.SET_PLAYLIST) {
       action.playlist = playlist;
     }
 
     socket.emit("message", { room: roomId, action });
   };
-
-  const handleMonitorEnd = () => {
-    if (!isMoniter) {
-      sendMessage(ACTION.NEXT_SONG);
-      nextSong();
-    }
-  };
-
-  useEffect(() => {
-    if (!isMoniter) sendMessage(ACTION.SET_PLAYLIST);
-  }, [playlist]);
 
   useEffect(() => {
     if (!isLogin && videoCount % 3 == 0) {
@@ -286,6 +263,12 @@ function YoutubePlayer({
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (!isMoniter) {
+      sendMessage(ACTION.SET_PLAYLIST);
+    }
+  }, [playlist]);
 
   const playPauseBtn = [
     playerState === YouTube.PlayerState.PLAYING
@@ -557,7 +540,7 @@ function YoutubePlayer({
             }}
             onEnd={() => {
               if (isMoniter) {
-                sendMessage(ACTION.MONITOR_END_VIDEO);
+                nextSong();
               } else {
                 sendMessage(ACTION.NEXT_SONG);
                 nextSong();

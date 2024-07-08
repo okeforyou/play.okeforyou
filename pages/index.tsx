@@ -38,6 +38,8 @@ import { useKaraokeState } from "../hooks/karaoke";
 import { useMyPlaylistState } from "../hooks/myPlaylist";
 import { useRoomState } from "../hooks/room";
 import { RecommendedVideo, SearchResult } from "../types/invidious";
+import { ACTION } from "../types/socket";
+import { socket } from "../utils/socket";
 
 const ListSingerGrid = dynamic(() => import("../components/ListSingerGrid"), {
   loading: () => <div>Loading...</div>,
@@ -78,6 +80,14 @@ function HomePage() {
       setCurVideoId(video.videoId);
       // then remove it from playlist
       setPlaylist(newPlaylist);
+    }
+
+    //Play Now
+    if (curVideoId) {
+      socket.emit("message", {
+        room,
+        action: { action: ACTION.SET_SONG, videoId: curVideoId },
+      });
     }
   }, [playlist, curVideoId]);
 
