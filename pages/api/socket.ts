@@ -26,6 +26,10 @@ const SocketHandler = (req, res) => {
         io.to(room).emit("message", action);
       });
 
+      socket.on("reqPlaylist", (room) => {
+        io.to(room).emit("reqPlaylist");
+      });
+
       socket.on("disconnect", () => {
         // console.info("user disconnected");
       });

@@ -81,7 +81,9 @@ function HomePage() {
       // then remove it from playlist
       setPlaylist(newPlaylist);
     }
+  }, [playlist, curVideoId]);
 
+  useEffect(() => {
     //Play Now
     if (curVideoId) {
       socket.emit("message", {
@@ -89,7 +91,7 @@ function HomePage() {
         action: { action: ACTION.SET_SONG, videoId: curVideoId },
       });
     }
-  }, [playlist, curVideoId]);
+  }, [curVideoId]);
 
   useEffect(() => {
     if (!user?.uid) {
@@ -188,6 +190,15 @@ function HomePage() {
           }}
         >
           <RssIcon className="w-4 h-4" /> Cast Youtube
+        </button>
+
+        <button
+          className="btn btn-xs gap-1 flex  btn-secondary flex-row 2xl:btn-sm "
+          onClick={() => {
+            socket.emit("reqPlaylist", room);
+          }}
+        >
+          ดึงคิว TV
         </button>
         <span className="text-primary text-xs 2xl:text-xl">
           คิวเพลง ( {playlist?.length || 0} เพลง )

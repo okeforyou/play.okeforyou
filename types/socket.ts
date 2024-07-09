@@ -2,10 +2,12 @@ export interface ClientToServerEvents {
   joinRoom: (room: string) => void;
   leaveRoom: (room: string) => void;
   message: (data: { room: string; action: SocketData }) => void;
+  reqPlaylist: (room: string) => void;
 }
 
 export interface ServerToClientEvents {
   message: (message: SocketData) => void;
+  reqPlaylist: () => void;
 }
 
 export interface InterServerEvents {

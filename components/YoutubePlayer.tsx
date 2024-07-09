@@ -132,6 +132,7 @@ function YoutubePlayer({
         case ACTION.SET_PLAYLIST:
           setPlaylist(data.playlist);
           break;
+
         default:
           break;
       }
@@ -140,6 +141,22 @@ function YoutubePlayer({
       socket.disconnect();
     };
   }, []);
+
+  useEffect(() => {
+    if (isMoniter)
+      socket.on("reqPlaylist", () => {
+        socket.emit("message", {
+          room,
+          action: {
+            action: ACTION.SET_PLAYLIST_FROM_TV,
+            playlist: playlist,
+          },
+        });
+      });
+    return () => {
+      socket.off("reqPlaylist");
+    };
+  }, [playlist, room]);
 
   const sendMessage = (act = ACTION.PLAY, _room?: string) => {
     const roomId = _room || room;
