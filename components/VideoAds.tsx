@@ -74,11 +74,8 @@ const VideoAds: React.FC = () => {
                 ×
               </div>
             )}
-            <a
-              href={currentAd.linkAdsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="relative"
+            <div
+              className="relative  max-w-md mx-auto cursor-pointer"
               onClick={() => window.open(currentAd.linkAdsUrl, "_blank")}
             >
               {currentAd.imageUrl && (
@@ -100,10 +97,10 @@ const VideoAds: React.FC = () => {
 
               <div
                 style={{
-                  bottom: -12,
+                  bottom: 25,
                   zIndex: 20,
                 }}
-                className="flex h-12  w-full absolute justify-center "
+                className="absolute  inset-x-0 flex justify-center"
                 onClick={(e) => {
                   setShowAd(false);
                 }}
@@ -124,7 +121,7 @@ const VideoAds: React.FC = () => {
                   </span>
                 </div>
               </div>
-            </a>
+            </div>
           </div>
         )}
       </div>
