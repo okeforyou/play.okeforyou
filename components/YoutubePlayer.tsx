@@ -60,7 +60,7 @@ function YoutubePlayer({
   const { room, setRoom } = useRoomState();
   const isMobile = useIsMobile();
 
-  const [isOpenMonitor, setIsOpenMonitor] = useState(false);
+  const [isOpenMonitor, setIsOpenMonitor] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
   const [isShowAds, setIsShowAds] = useState(false);
   const [videoCount, setVideoCount] = useState<number>(0);
@@ -380,7 +380,7 @@ function YoutubePlayer({
             {isRemote && (
               <div className="absolute inset-0 flex items-center justify-center  text-xl ">
                 {isMobile ? (
-                  <div className="text-base flex space-y-4 flex-col text-center">
+                  <div className=" text-sm flex space-y-2 flex-col text-center">
                     <div>
                       คัดลอก URL เพื่อเปิดบน Google Chrome บนหน้าจอที่ 2<br />
                       <span className="font-bold">
@@ -390,13 +390,13 @@ function YoutubePlayer({
                     <div className="relative">
                       <input
                         id="room-id"
-                        className="py-3 px-4 pt-4 block w-full text-black bg-gray-100 rounded-lg text-sm disabled:opacity-50 border-0 disabled:pointer-events-none"
+                        className="py-2 px-2  block w-full text-black bg-gray-100 rounded-lg text-sm disabled:opacity-50 border-0 disabled:pointer-events-none"
                         placeholder="กรอกเลขห้อง"
                         value={inputRoomId}
                         onChange={(e) => setInputRoomId(e.target.value)}
                       />
                       <button
-                        className="absolute right-2 top-2 py-1 px-3 text-white rounded-lg bg-primary"
+                        className="absolute right-2 top-2 py-0.5 px-3 text-white rounded-lg bg-primary"
                         onClick={() => {
                           socket.emit("leaveRoom", room);
                           setRoom(inputRoomId);
@@ -550,7 +550,9 @@ function YoutubePlayer({
             opts={{
               playerVars: {
                 autoplay:
-                  isLogin && playerState !== PlayerStates.PAUSED ? 1 : 0,
+                  (isLogin || isMoniter) && playerState !== PlayerStates.PAUSED
+                    ? 1
+                    : 0,
                 controls: 0,
                 disablekb: 1,
                 enablejsapi: 1,

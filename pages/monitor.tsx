@@ -9,6 +9,7 @@ import { useAuth } from "../context/AuthContext";
 import { useKaraokeState } from "../hooks/karaoke";
 import { useRoomState } from "../hooks/room";
 import { ACTION } from "../types/socket";
+import { generateRandomString } from "../utils/random";
 import { socket } from "../utils/socket";
 
 const Monitor = () => {
@@ -20,9 +21,13 @@ const Monitor = () => {
     useKaraokeState();
 
   const { user } = useAuth();
-  const { room: roomOfMonitor } = useRoomState();
+  const { room: roomOfMonitor, setRoom } = useRoomState();
 
   useEffect(() => {
+    if (roomOfMonitor === "") {
+      setRoom(generateRandomString(6));
+    }
+
     if (!room) {
       socket.emit("joinRoom", roomOfMonitor);
     }
