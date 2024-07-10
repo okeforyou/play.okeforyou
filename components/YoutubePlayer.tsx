@@ -60,7 +60,7 @@ function YoutubePlayer({
   const { room, setRoom } = useRoomState();
   const isMobile = useIsMobile();
 
-  const [isOpenMonitor, setIsOpenMonitor] = useState(true);
+  const [isOpenMonitor, setIsOpenMonitor] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isShowAds, setIsShowAds] = useState(false);
   const [videoCount, setVideoCount] = useState<number>(0);
