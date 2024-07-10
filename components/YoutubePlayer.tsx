@@ -177,7 +177,7 @@ function YoutubePlayer({
   };
 
   useEffect(() => {
-    if (!isLogin && videoCount % 3 == 0) {
+    if (!isLogin && videoCount % 3 == 0 && videoCount !== 0) {
       handlePause();
       setIsShowAds(false);
       setTimeout(() => setIsShowAds(true), 200);
