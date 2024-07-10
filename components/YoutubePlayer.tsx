@@ -407,7 +407,7 @@ function YoutubePlayer({
                         ยืนยัน
                       </button>
                     </div>
-                    <div className="text-sm text-red-300">
+                    <div className="text-sm">
                       รองรับการใช้งานผ่านทุกอุปกรณ์ที่มี Google Chrome
                     </div>
                   </div>
@@ -425,17 +425,23 @@ function YoutubePlayer({
             )}
             <div
               className={`  cursor-pointer   ${
-                isRemote ? "absolute top-5 right-5  " : ""
-              }  flex flex-col items-center justify-center w-16 h-16 text-center   `}
+                isRemote ? "absolute top-5 right-5  " : "w-16 h-16  "
+              }  flex flex-col items-center justify-center text-center   `}
               onClick={() => {
                 setIsRemote(!isRemote);
                 handlePause();
               }}
             >
               <TvIcon
-                className={`w-8 h-8 ${isRemote ? "opacity-0 hidden" : ""}`}
+                className={`w-8 h-8 ${isRemote ? "opacity-0 hidden none" : ""}`}
               />
-              <div className="text-xs">{isRemote && "ปิด"} 2 หน้าจอ</div>
+              <div
+                className={`text-xs ${
+                  isRemote ? "bg-white text-primary px-0.5" : ""
+                }`}
+              >
+                {isRemote && "ปิด"} 2 หน้าจอ
+              </div>
             </div>
           </div>
         </div>

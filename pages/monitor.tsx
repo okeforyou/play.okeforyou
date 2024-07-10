@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
-import { CheckCircleIcon, HandThumbUpIcon } from "@heroicons/react/24/outline";
+import { CheckCircleIcon } from "@heroicons/react/24/outline";
 
 import Alert, { AlertHandler } from "../components/Alert";
 import YoutubePlayer from "../components/YoutubePlayer";
@@ -21,10 +21,6 @@ const Monitor = () => {
 
   const { user } = useAuth();
   const { room: roomOfMonitor } = useRoomState();
-
-  const isLogin = !!user.uid;
-
-  if (!isLogin) router.push("/login");
 
   useEffect(() => {
     if (!room) {
@@ -85,11 +81,11 @@ const Monitor = () => {
         </div>
       ) : (
         <div className="relative h-screen">
-          <div className="cursor-pointer absolute text-center inset-0 flex flex-col items-center justify-center text-xl">
+          <div className="cursor-pointer absolute text-center inset-0 flex flex-col items-center justify-center text-5xl">
             YouOke TV
             <br /> เลขห้อง: {roomOfMonitor}
             <br />
-            <span className="text-sm text-gray-500">
+            <span className="text-3xl text-gray-500 pt-4">
               กรอกเลขห้องบนมือถือของคุณ
             </span>
           </div>

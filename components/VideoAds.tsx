@@ -47,6 +47,12 @@ const VideoAds: React.FC = () => {
         className={`absolute flex h-full inset-0 z-30 items-center justify-center ${
           showAd ? "bg-black bg-opacity-30" : ""
         }`}
+        style={{
+          width: "100%",
+          height: "100%",
+          position: "fixed",
+          zIndex: 100,
+        }}
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();

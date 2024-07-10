@@ -39,6 +39,7 @@ import { useMyPlaylistState } from "../hooks/myPlaylist";
 import { useRoomState } from "../hooks/room";
 import { RecommendedVideo, SearchResult } from "../types/invidious";
 import { ACTION } from "../types/socket";
+import { generateRandomString } from "../utils/random";
 import { socket } from "../utils/socket";
 
 const ListSingerGrid = dynamic(() => import("../components/ListSingerGrid"), {
@@ -99,9 +100,7 @@ function HomePage() {
       return;
     }
     if (room === "") {
-      const random = Math.floor(Math.random() * 10);
-      const room = user.uid.slice(0, 5) + random;
-      setRoom(room);
+      setRoom(generateRandomString(6));
     }
   }, [user?.uid]);
 
@@ -181,25 +180,28 @@ function HomePage() {
   const PlaylistScreen = (
     <>
       <div className="flex flex-row font-bold gap-2 items-center">
-        <button
-          className="btn btn-primary btn-xs gap-1 flex  flex-row 2xl:btn-sm "
-          onClick={() => {
-            const videoIds = playlist.map((p) => p.videoId).join(",");
-            const youtubeURL = `http://www.youtube.com/watch_videos?video_ids=${videoIds}`;
-            window.open(youtubeURL);
-          }}
-        >
-          <RssIcon className="w-4 h-4" /> Cast Youtube
-        </button>
-
-        <button
-          className="btn btn-xs gap-1 flex  btn-secondary flex-row 2xl:btn-sm "
-          onClick={() => {
-            socket.emit("reqPlaylist", room);
-          }}
-        >
-          ดึงคิว TV
-        </button>
+        {!!user.uid && (
+          <>
+            <button
+              className="btn btn-primary btn-xs gap-1 flex  flex-row 2xl:btn-sm "
+              onClick={() => {
+                const videoIds = playlist.map((p) => p.videoId).join(",");
+                const youtubeURL = `http://www.youtube.com/watch_videos?video_ids=${videoIds}`;
+                window.open(youtubeURL);
+              }}
+            >
+              <RssIcon className="w-4 h-4" /> Cast Youtube
+            </button>
+            <button
+              className="btn btn-xs gap-1 flex  btn-secondary flex-row 2xl:btn-sm "
+              onClick={() => {
+                socket.emit("reqPlaylist", room);
+              }}
+            >
+              ดึงคิว TV
+            </button>{" "}
+          </>
+        )}
         <span className="text-primary text-xs 2xl:text-xl">
           คิวเพลง ( {playlist?.length || 0} เพลง )
         </span>
