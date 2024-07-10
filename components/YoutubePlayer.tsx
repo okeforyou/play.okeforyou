@@ -449,6 +449,10 @@ function YoutubePlayer({
     );
   };
 
+  const buttons = !isMoniter
+    ? playPauseBtn.concat(playerBtns, muteBtn, isRemote ? [] : fullBtn)
+    : [...fullBtn];
+
   return (
     <div
       ref={fullscreenRef}
@@ -578,39 +582,35 @@ function YoutubePlayer({
       {!isLogin && !isMoniter && <BottomAds />}
       {!isLogin && !isMoniter && isShowAds && <VideoAds />}
 
-      {!isMoniter && (
-        <div
-          className={`flex-shrink-0 flex flex-row md:w-full p-1 items-center z-20 hover:opacity-100 ${
-            UseFullScreenCss ? "opacity-0" : ""
-          }`}
-          style={
-            UseFullScreenCss
-              ? {
-                  position: "fixed",
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                }
-              : {}
-          }
-        >
-          {playPauseBtn
-            .concat(playerBtns, muteBtn, isRemote ? [] : fullBtn)
-            .map((btn) => {
-              return (
-                <button
-                  key={btn.label}
-                  className="btn btn-ghost font-normal text-primary flex h-auto flex-col flex-1 overflow-hidden  text-sm 2xl:text-lg p-0 hover:bg-base-200"
-                  onClick={btn.onClick}
-                >
-                  <btn.icon className="w-8 h-8 2xl:w-10 2xl:h-10" />
-                  {btn.label}
-                </button>
-              );
-            })}
-          {extra}
-        </div>
-      )}
+      <div
+        className={`flex-shrink-0 flex flex-row md:w-full p-1 items-center z-20 hover:opacity-100 ${
+          UseFullScreenCss ? "opacity-0" : ""
+        }`}
+        style={
+          UseFullScreenCss
+            ? {
+                position: "fixed",
+                left: 0,
+                right: 0,
+                bottom: 0,
+              }
+            : {}
+        }
+      >
+        {buttons.map((btn) => {
+          return (
+            <button
+              key={btn.label}
+              className="btn btn-ghost font-normal text-primary flex h-auto flex-col flex-1 overflow-hidden  text-sm 2xl:text-lg p-0 hover:bg-base-200"
+              onClick={btn.onClick}
+            >
+              <btn.icon className="w-8 h-8 2xl:w-10 2xl:h-10" />
+              {btn.label}
+            </button>
+          );
+        })}
+        {extra}
+      </div>
     </div>
   );
 }
