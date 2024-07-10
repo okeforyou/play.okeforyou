@@ -573,8 +573,8 @@ function YoutubePlayer({
         )}
       </div>
 
-      {!isLogin && <BottomAds />}
-      {!isLogin && isShowAds && <VideoAds />}
+      {!isLogin && !isMoniter && <BottomAds />}
+      {!isLogin && !isMoniter && isShowAds && <VideoAds />}
 
       {!isMoniter && (
         <div
