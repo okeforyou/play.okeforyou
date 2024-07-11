@@ -55,7 +55,8 @@ function YoutubePlayer({
   const [isIphone, setIsIphone] = useState<boolean>(false);
   const [isRemote, setIsRemote] = useState<boolean>(false);
 
-  const { playlist, curVideoId, setPlaylist } = useKaraokeState();
+  const { playlist, curVideoId, setCurVideoId, setPlaylist } =
+    useKaraokeState();
 
   const { room, setRoom } = useRoomState();
   const isMobile = useIsMobile();
@@ -346,7 +347,17 @@ function YoutubePlayer({
         label: "เพลงถัดไป",
         onClick: () => {
           sendMessage(ACTION.NEXT_SONG);
-          nextSong();
+          if (!isRemote) {
+            nextSong();
+          } else {
+            if (playlist?.length) {
+              // playing first video
+              const [video, ...newPlaylist] = playlist;
+              setCurVideoId(video.videoId);
+            } else {
+              setCurVideoId("");
+            }
+          }
         },
       },
       {
@@ -355,7 +366,7 @@ function YoutubePlayer({
         onClick: handleReplay,
       },
     ],
-    [nextSong]
+    [nextSong, isRemote, playlist]
   );
 
   const RemoteComponent = () => {
@@ -572,7 +583,9 @@ function YoutubePlayer({
                 nextSong();
               } else {
                 sendMessage(ACTION.NEXT_SONG);
-                nextSong();
+                if (!isRemote) {
+                  nextSong();
+                }
               }
             }}
           />

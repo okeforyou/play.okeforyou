@@ -60,7 +60,7 @@ const Monitor = () => {
       // then remove it from playlist
       setPlaylist(newPlaylist);
     }
-  }, [playlist, curVideoId]);
+  }, [playlist, curVideoId, router.query?.room]);
 
   return (
     <>
