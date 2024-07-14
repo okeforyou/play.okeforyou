@@ -1,4 +1,4 @@
-import { Server } from "socket.io";
+import { Server } from 'socket.io'
 
 const SocketHandler = (req, res) => {
   if (res.socket.server.io) {
@@ -10,19 +10,22 @@ const SocketHandler = (req, res) => {
 
     io.on("connection", (socket) => {
       socket.on("joinRoom", (room) => {
-        // console.log("joinRoom", room);
+        // console.info("joinRoom", room, socket.id);
         socket.join(room);
-        // console.log(`User joined room: ${room}`);
+        socket.emit("roomJoined", room);
+        // console.info(`User joined room: ${room}`);
       });
 
       socket.on("leaveRoom", (room) => {
-        // console.log("leaveRoom", room);
+        // console.info("leaveRoom", room);
         socket.leave(room);
-        // console.log(`User leaveRoom room: ${room}`);
+        socket.emit("roomLeft", room);
+        // console.info(`User leaveRoom room: ${room}`);
       });
 
       socket.on("message", (data) => {
         const { room, action } = data;
+        // console.info(room, action);
         io.to(room).emit("message", action);
       });
 
@@ -31,7 +34,7 @@ const SocketHandler = (req, res) => {
       });
 
       socket.on("disconnect", () => {
-        // console.info("user disconnected");
+        // console.info("user disconnected " + socket.id);
       });
     });
   }

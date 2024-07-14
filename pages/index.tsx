@@ -1,46 +1,46 @@
 import {
-  arrayUnion,
-  collection,
-  doc,
-  getDocs,
-  query,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-import dynamic from "next/dynamic";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { DebounceInput } from "react-debounce-input";
+    arrayUnion,
+    collection,
+    doc,
+    getDocs,
+    query,
+    updateDoc,
+    where,
+} from 'firebase/firestore'
+import dynamic from 'next/dynamic'
+import Image from 'next/image'
+import { useEffect, useRef, useState } from 'react'
+import { DebounceInput } from 'react-debounce-input'
 
 import {
-  BarsArrowUpIcon,
-  ListBulletIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/20/solid";
+    BarsArrowUpIcon,
+    ListBulletIcon,
+    MagnifyingGlassIcon,
+} from '@heroicons/react/20/solid'
 import {
-  BookmarkIcon,
-  CheckCircleIcon,
-  ChevronRightIcon,
-  PlusIcon,
-  RssIcon,
-} from "@heroicons/react/24/outline";
+    BookmarkIcon,
+    CheckCircleIcon,
+    ChevronRightIcon,
+    PlusIcon,
+    RssIcon,
+} from '@heroicons/react/24/outline'
 
-import Alert, { AlertHandler } from "../components/Alert";
-import BottomNavigation from "../components/BottomNavigation";
-import ListPlaylistsGrid from "../components/ListPlaylistsGrid";
-import Modal, { ModalHandler } from "../components/Modal";
-import SearchResultGrid from "../components/SearchResultGrid";
-import VideoHorizontalCard from "../components/VideoHorizontalCard";
-import YoutubePlayer from "../components/YoutubePlayer";
-import { useAuth } from "../context/AuthContext";
-import { database } from "../firebase";
-import { useKaraokeState } from "../hooks/karaoke";
-import { useMyPlaylistState } from "../hooks/myPlaylist";
-import { useRoomState } from "../hooks/room";
-import { RecommendedVideo, SearchResult } from "../types/invidious";
-import { ACTION } from "../types/socket";
-import { generateRandomString } from "../utils/random";
-import { socket } from "../utils/socket";
+import Alert, { AlertHandler } from '../components/Alert'
+import BottomNavigation from '../components/BottomNavigation'
+import ListPlaylistsGrid from '../components/ListPlaylistsGrid'
+import Modal, { ModalHandler } from '../components/Modal'
+import SearchResultGrid from '../components/SearchResultGrid'
+import VideoHorizontalCard from '../components/VideoHorizontalCard'
+import YoutubePlayer from '../components/YoutubePlayer'
+import { useAuth } from '../context/AuthContext'
+import { database } from '../firebase'
+import { useKaraokeState } from '../hooks/karaoke'
+import { useMyPlaylistState } from '../hooks/myPlaylist'
+import { useRoomState } from '../hooks/room'
+import { RecommendedVideo, SearchResult } from '../types/invidious'
+import { ACTION } from '../types/socket'
+import { generateRandomString } from '../utils/random'
+import { socket } from '../utils/socket'
 
 const ListSingerGrid = dynamic(() => import("../components/ListSingerGrid"), {
   loading: () => <div>Loading...</div>,
@@ -73,26 +73,6 @@ function HomePage() {
   const [selectedVideo, setSelectedVideo] = useState<
     SearchResult | RecommendedVideo
   >();
-
-  useEffect(() => {
-    if (playlist?.length && !curVideoId) {
-      // playing first video
-      const [video, ...newPlaylist] = playlist;
-      setCurVideoId(video.videoId);
-      // then remove it from playlist
-      setPlaylist(newPlaylist);
-    }
-  }, [playlist, curVideoId]);
-
-  useEffect(() => {
-    //Play Now
-    if (curVideoId) {
-      socket.emit("message", {
-        room,
-        action: { action: ACTION.SET_SONG, videoId: curVideoId },
-      });
-    }
-  }, [curVideoId]);
 
   useEffect(() => {
     if (!user?.uid) {

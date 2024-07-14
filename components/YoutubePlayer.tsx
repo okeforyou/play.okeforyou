@@ -1,34 +1,36 @@
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useFullscreen, usePromise, useToggle } from "react-use";
-import YouTube, { YouTubePlayer, YouTubeProps } from "react-youtube";
-import PlayerStates from "youtube-player/dist/constants/PlayerStates";
+import Image from 'next/image'
+import { useRouter } from 'next/router'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useFullscreen, usePromise, useToggle } from 'react-use'
+import YouTube, { YouTubePlayer, YouTubeProps } from 'react-youtube'
+import PlayerStates from 'youtube-player/dist/constants/PlayerStates'
 
 import {
-  ArrowUturnLeftIcon,
-  ForwardIcon,
-  PauseIcon,
-  PlayIcon,
-  SpeakerWaveIcon,
-  SpeakerXMarkIcon,
-} from "@heroicons/react/20/solid";
+    ArrowUturnLeftIcon,
+    ForwardIcon,
+    PauseIcon,
+    PlayIcon,
+    SpeakerWaveIcon,
+    SpeakerXMarkIcon,
+} from '@heroicons/react/20/solid'
 import {
-  ArrowsPointingInIcon,
-  ArrowsPointingOutIcon,
-  ExclamationTriangleIcon,
-  TvIcon,
-} from "@heroicons/react/24/outline";
+    ArrowsPointingInIcon,
+    ArrowsPointingOutIcon,
+    ExclamationTriangleIcon,
+    TvIcon,
+} from '@heroicons/react/24/outline'
+import { ArrowPathIcon } from '@heroicons/react/24/solid'
 
-import { useAuth } from "../context/AuthContext";
-import useIsMobile from "../hooks/isMobile";
-import { useKaraokeState } from "../hooks/karaoke";
-import { useRoomState } from "../hooks/room";
-import { ACTION, SocketData } from "../types/socket";
-import { socket } from "../utils/socket";
-import Alert, { AlertHandler } from "./Alert";
-import BottomAds from "./BottomAds";
-import VideoAds from "./VideoAds";
+import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
+import useIsMobile from '../hooks/isMobile'
+import { useKaraokeState } from '../hooks/karaoke'
+import { useRoomState } from '../hooks/room'
+import { ACTION, SocketData } from '../types/socket'
+import { joinRoom, leaveRoom, socket } from '../utils/socket'
+import Alert, { AlertHandler } from './Alert'
+import BottomAds from './BottomAds'
+import VideoAds from './VideoAds'
 
 function YoutubePlayer({
   videoId,
@@ -59,6 +61,7 @@ function YoutubePlayer({
     useKaraokeState();
 
   const { room, setRoom } = useRoomState();
+  const { addToast } = useToast();
   const isMobile = useIsMobile();
 
   const [isOpenMonitor, setIsOpenMonitor] = useState(true);
@@ -93,7 +96,7 @@ function YoutubePlayer({
     // Create a socket connection
     const _room = isMoniter ? (router.query?.room as string) || room : room;
 
-    socket.emit("joinRoom", _room);
+    joinRoom(_room, addToast);
 
     socket.on("message", (data) => {
       //remote
@@ -159,10 +162,35 @@ function YoutubePlayer({
     };
   }, [playlist, room]);
 
+  useEffect(() => {
+    if (playlist?.length && !curVideoId && !isRemote) {
+      // playing first video
+      const [video, ...newPlaylist] = playlist;
+      setCurVideoId(video.videoId);
+      // then remove it from playlist
+      setPlaylist(newPlaylist);
+
+      socket.emit("message", {
+        room: router.query?.room as string,
+        action: { action: ACTION.SET_PLAYLIST_FROM_TV, playlist: newPlaylist },
+      });
+    }
+  }, [playlist, curVideoId]);
+
+  useEffect(() => {
+    //Play Now
+    if (curVideoId && isRemote) {
+      socket.emit("message", {
+        room,
+        action: { action: ACTION.SET_SONG, videoId: curVideoId },
+      });
+    }
+  }, [curVideoId]);
+
   const sendMessage = (act = ACTION.PLAY, _room?: string) => {
     const roomId = _room || room;
 
-    if (!roomId || isMoniter || !isLogin) return;
+    if (!roomId || isMoniter || !isLogin || !isRemote) return;
 
     let action: SocketData = { action: act };
 
@@ -283,7 +311,7 @@ function YoutubePlayer({
   };
 
   useEffect(() => {
-    if (!isMoniter) {
+    if (!isMoniter && isRemote) {
       sendMessage(ACTION.SET_PLAYLIST);
     }
   }, [playlist]);
@@ -346,16 +374,16 @@ function YoutubePlayer({
         icon: ForwardIcon,
         label: "เพลงถัดไป",
         onClick: () => {
-          sendMessage(ACTION.NEXT_SONG);
           if (!isRemote) {
             nextSong();
           } else {
+            sendMessage(ACTION.NEXT_SONG);
             if (playlist?.length) {
               // playing first video
               const [video, ...newPlaylist] = playlist;
               setCurVideoId(video.videoId);
             } else {
-              setCurVideoId("");
+              // setCurVideoId("");
             }
           }
         },
@@ -409,9 +437,10 @@ function YoutubePlayer({
                       <button
                         className="absolute right-2 top-2 py-0.5 px-3 text-white rounded-lg bg-primary"
                         onClick={() => {
-                          socket.emit("leaveRoom", room);
+                          leaveRoom(room);
                           setRoom(inputRoomId);
-                          socket.emit("joinRoom", inputRoomId);
+                          joinRoom(inputRoomId, addToast);
+
                           sendMessage(ACTION.REMOTE_JOIN, inputRoomId);
                         }}
                       >
@@ -462,7 +491,16 @@ function YoutubePlayer({
 
   const buttons = !isMoniter
     ? playPauseBtn.concat(playerBtns, muteBtn, isRemote ? [] : fullBtn)
-    : [...fullBtn];
+    : [
+        ...fullBtn,
+        {
+          icon: ArrowPathIcon,
+          label: "เชื่อมต่อใหม่",
+          onClick: async () => {
+            joinRoom(router.query?.room as string, addToast);
+          },
+        },
+      ];
 
   return (
     <div
@@ -582,7 +620,6 @@ function YoutubePlayer({
               if (isMoniter) {
                 nextSong();
               } else {
-                sendMessage(ACTION.NEXT_SONG);
                 if (!isRemote) {
                   nextSong();
                 }

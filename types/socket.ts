@@ -8,6 +8,8 @@ export interface ClientToServerEvents {
 export interface ServerToClientEvents {
   message: (message: SocketData) => void;
   reqPlaylist: () => void;
+  roomJoined: (room: string) => void;
+  roomLeft: (room: string) => void;
 }
 
 export interface InterServerEvents {
