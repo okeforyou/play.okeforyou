@@ -637,12 +637,13 @@ function YoutubePlayer({
           UseFullScreenCss ? "opacity-0" : ""
         }`}
         style={
-          UseFullScreenCss
+          UseFullScreenCss || isMoniter
             ? {
                 position: "fixed",
                 left: 0,
                 right: 0,
                 bottom: 0,
+                background: isMoniter ? "white" : "initial",
               }
             : {}
         }
