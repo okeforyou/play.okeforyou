@@ -654,7 +654,12 @@ function YoutubePlayer({
       <div
         className={`flex-shrink-0 flex flex-row md:w-full p-1 items-center z-20 ${
           isMouseMoving ? "hover:opacity-100" : ""
-        } ${UseFullScreenCss || !isMouseMoving ? "opacity-0" : ""}`}
+        } ${
+          (UseFullScreenCss || !isMouseMoving) &&
+          (isFullscreen || isFullScreenIphone)
+            ? "opacity-0"
+            : ""
+        }`}
         style={
           UseFullScreenCss || isMoniter
             ? {
