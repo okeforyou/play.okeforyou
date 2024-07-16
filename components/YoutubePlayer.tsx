@@ -72,6 +72,25 @@ function YoutubePlayer({
 
   const mounted = usePromise();
 
+  const [isMouseMoving, setIsMouseMoving] = useState(true);
+  let timeoutId: NodeJS.Timeout;
+
+  const handleMouseMove = () => {
+    setIsMouseMoving(true);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      setIsMouseMoving(false);
+    }, 3000); // 3 seconds delay before hiding the div
+  };
+
+  useEffect(() => {
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
   const UseFullScreenCss = isFullScreenIphone;
   const isIOS =
     /iPad|iPhone/i.test(navigator.userAgent) ||
@@ -633,9 +652,9 @@ function YoutubePlayer({
       {!isLogin && !isMoniter && isShowAds && <VideoAds />}
 
       <div
-        className={`flex-shrink-0 flex flex-row md:w-full p-1 items-center z-20 hover:opacity-100 ${
-          UseFullScreenCss ? "opacity-0" : ""
-        }`}
+        className={`flex-shrink-0 flex flex-row md:w-full p-1 items-center z-20 ${
+          isMouseMoving ? "hover:opacity-100" : ""
+        } ${UseFullScreenCss || !isMouseMoving ? "opacity-0" : ""}`}
         style={
           UseFullScreenCss || isMoniter
             ? {
