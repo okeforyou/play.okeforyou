@@ -1,4 +1,4 @@
-import { RecommendedVideo, SearchResult } from './invidious'
+import { RecommendedVideo, SearchResult } from "./invidious";
 
 export type PlaylistItem = (SearchResult | RecommendedVideo) & {
   key: number;
@@ -27,8 +27,6 @@ export interface GetTopArtists {
   status: string;
   artist: Artist[];
   artistCategories: ArtistCategory[];
-  clientIp: string;
-  time: number;
 }
 
 export interface Single {

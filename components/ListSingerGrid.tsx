@@ -19,7 +19,7 @@ export default function ListSingerGrid({ showTab = true }) {
     }
   );
 
-  const [tagId, setTagId] = useState("193");
+  const [tagId, setTagId] = useState("37i9dQZF1DWW1S2VXZ4bIj");
   const { data: artists, isLoading } = useQuery(
     ["getArtists", tagId],
     () => getArtists(tagId),
@@ -112,14 +112,14 @@ export default function ListSingerGrid({ showTab = true }) {
         })}
       </div>
       <div className="col-span-full  bg-transparent p-2 pl-2 text-2xl">
-        หมวดหมู่ศิลปิน {isError}
+        เพลย์ลิสต์
       </div>
       {!isLoadTopArtists && (
         <div
           className={`tabs tabs-boxed col-span-full justify-center bg-transparent relative grid grid-cols-3 xl:grid-cols-5  gap-2 col-span-full p-0`}
         >
           {topArtistsData?.artistCategories.map((cat) => {
-            const names = cat.tag_name.replace("/ ", "").split(" ");
+            const names = cat.tag_name?.replace("/ ", "").split(" ");
 
             const firstword = names[0] || "";
             let lastword = "";

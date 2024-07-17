@@ -42,16 +42,16 @@ export const getSkeletonItems = (length: number) =>
   Array.from({ length }).map((_, i) => i);
 
 export const getTopArtists = async () => {
-  const res = await axios.get<GetTopArtists>("/api/artists/");
+  const res = await axios.get<GetTopArtists>("/api/spotify/artists/");
   return res.data;
 };
 
 export const getArtists = async (gender: string = "1") => {
-  const res = await axios.get<GetArtists>("/api/artists/" + gender);
+  const res = await axios.get<GetArtists>("/api/spotify/artists/" + gender);
   return res.data;
 };
 
 export const getHitSingles = async () => {
-  const res = await axios.get<GetHitSingles>("/api/hits");
+  const res = await axios.get<GetHitSingles>("/api/spotify/hits");
   return res.data;
 };
