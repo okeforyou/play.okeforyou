@@ -61,8 +61,6 @@ export default function ListSingerGrid({ showTab = true }) {
     },
   });
 
-  tempTopArtistsData;
-
   useEffect(() => {
     setTopArtistsData(tempTopArtistsData);
   }, []);
@@ -72,7 +70,11 @@ export default function ListSingerGrid({ showTab = true }) {
   }, [genreText, refetch]);
 
   const { setSearchTerm } = useKaraokeState();
-  const { artist: topArtists } = topArtistsData;
+  const { artist: topArtists } = !!topArtistsData
+    ? topArtistsData
+    : {
+        artist: [],
+      };
   const { artist } = artists || {};
   const { setActiveIndex } = useKaraokeState();
   const [isError, setIsError] = useState(false);
