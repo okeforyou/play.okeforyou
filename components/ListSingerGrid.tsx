@@ -1,13 +1,26 @@
 import Image from "next/image";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 
 import { useKaraokeState } from "../hooks/karaoke";
-import { getArtists, getSkeletonItems, getTopArtists } from "../utils/api";
+import { GetTopArtists, SearchPlaylists } from "../types";
+import {
+  getArtists,
+  getSkeletonItems,
+  getTopArtists,
+  searchPlaylists,
+} from "../utils/api";
 import JooxError from "./JooxError";
 
+const GENRES = ["เพลงไทย", "ลูกทุ่ง", "เพื่อชีวิต", "ป็อป"];
+
 export default function ListSingerGrid({ showTab = true }) {
-  const { data: topArtistsData, isLoading: isLoadTopArtists } = useQuery(
+  const [topArtistsData, setTopArtistsData] = useState<GetTopArtists>({
+    artistCategories: [],
+    artist: [],
+  } as GetTopArtists);
+
+  const { data: tempTopArtistsData, isLoading: isLoadTopArtists } = useQuery(
     ["getTopArtists"],
     getTopArtists,
     {
@@ -15,6 +28,9 @@ export default function ListSingerGrid({ showTab = true }) {
       refetchInterval: 0,
       onError: () => {
         setIsError(true);
+      },
+      onSuccess: (data) => {
+        setTopArtistsData(data);
       },
     }
   );
@@ -31,8 +47,32 @@ export default function ListSingerGrid({ showTab = true }) {
       },
     }
   );
+
+  const [genreText, setGenreText] = useState("เพลงฮิตไทย");
+  const { isLoading: isLoadingGenre, refetch } = useQuery<
+    SearchPlaylists,
+    Error
+  >(["searchPlaylists", genreText], () => searchPlaylists(genreText), {
+    enabled: false,
+    onSuccess: (data) => {
+      const _topArtistsData = { ...topArtistsData };
+      _topArtistsData.artistCategories = data.artistCategories;
+      setTopArtistsData(_topArtistsData);
+    },
+  });
+
+  tempTopArtistsData;
+
+  useEffect(() => {
+    setTopArtistsData(tempTopArtistsData);
+  }, []);
+
+  useEffect(() => {
+    refetch();
+  }, [genreText, refetch]);
+
   const { setSearchTerm } = useKaraokeState();
-  const { artist: topArtists } = topArtistsData || {};
+  const { artist: topArtists } = topArtistsData;
   const { artist } = artists || {};
   const { setActiveIndex } = useKaraokeState();
   const [isError, setIsError] = useState(false);
@@ -112,6 +152,39 @@ export default function ListSingerGrid({ showTab = true }) {
         })}
       </div>
       <div className="col-span-full  bg-transparent p-2 pl-2 text-2xl">
+        แนวเพลง
+      </div>
+
+      <div
+        className={`tabs tabs-boxed col-span-full justify-center bg-transparent relative grid grid-cols-3 xl:grid-cols-5  gap-2 col-span-full p-0`}
+      >
+        {GENRES?.map((gen) => {
+          // gen list
+          return (
+            <div
+              key={gen}
+              className={`text-sm h-10 leading-6 hover:drop-shadow-xl hover:text-slate-200   text-white  tab   ${
+                genreText == gen ? "tab-active" : ""
+              }   
+                `}
+              onClick={() => setGenreText(gen)}
+              style={{ borderRadius: "9999px" }}
+            >
+              <div
+                className="absolute  top-0 h-full w-full bg-fixed items-center rounded-full  "
+                style={{
+                  backgroundColor: genreText == gen ? "" : "rgba(0, 0, 0, 0.4)",
+                }}
+              >
+                <div className="flex h-full items-center justify-center">
+                  {gen}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="col-span-full  bg-transparent p-2 pl-2 text-2xl">
         เพลย์ลิสต์
       </div>
       {!isLoadTopArtists && (
@@ -131,7 +204,7 @@ export default function ListSingerGrid({ showTab = true }) {
             return (
               <div
                 key={cat.tag_id}
-                className={`text-sm h-20 leading-6 hover:drop-shadow-xl hover:text-slate-200 tracking-wide text-white bg-slate-900 tab bg-cover bg-no-repeat ${
+                className={`text-sm aspect-square leading-6 hover:drop-shadow-xl hover:text-slate-200 tracking-wide text-white bg-slate-900 tab bg-cover bg-center bg-no-repeat ${
                   tagId == cat.tag_id ? "tab-active" : ""
                 }   
                 `}
@@ -140,7 +213,7 @@ export default function ListSingerGrid({ showTab = true }) {
               >
                 <div
                   className="absolute  top-0 h-full w-full bg-fixed items-center"
-                  style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
+                  style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
                 >
                   <div className="flex h-full items-center justify-center">
                     {firstword}
@@ -155,7 +228,7 @@ export default function ListSingerGrid({ showTab = true }) {
       )}
       {isLoading && (
         <>
-          <div className="absolute inset-0 bg-gradient-to-t from-base-300 z-10" />
+          <div className="fixed inset-0 bg-gradient-to-t bottom-0 from-base-300 z-10" />
           {getSkeletonItems(16).map((s) => (
             <div
               key={s}
@@ -167,7 +240,10 @@ export default function ListSingerGrid({ showTab = true }) {
       <div className="col-span-full bg-transparent p-4 pb-2 pl-2 text-2xl">
         {(topArtistsData?.artistCategories || []).find(
           (cat) => cat.tag_id === tagId
-        )?.tag_name || "ศิลปินไทย ชายเดี่ยว"}
+        )?.tag_name ||
+          (topArtistsData?.artistCategories.length > 0 &&
+            topArtistsData?.artistCategories[0].tag_name) ||
+          "เพลงฮิต"}
       </div>
       <div
         className={`tabs tabs-boxed col-span-full justify-center bg-transparent relative grid grid-cols-3 xl:grid-cols-5  gap-2 col-span-full p-0`}

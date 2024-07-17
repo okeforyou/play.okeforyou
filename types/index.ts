@@ -41,3 +41,8 @@ export interface GetHitSingles {
   clientIp: string;
   time: number;
 }
+
+export interface SearchPlaylists {
+  status: string;
+  artistCategories: ArtistCategory[];
+}

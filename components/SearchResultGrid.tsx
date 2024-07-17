@@ -61,7 +61,7 @@ export default function SearchResultGrid({
     <>
       {isLoading && (
         <>
-          <div className="absolute inset-0 bg-gradient-to-t from-base-300 z-10" />
+          <div className="fixed inset-0 bg-gradient-to-t from-base-300 z-10" />
           {getSkeletonItems(16).map((s) => (
             <div
               key={s}

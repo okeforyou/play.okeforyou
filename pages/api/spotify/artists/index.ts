@@ -40,9 +40,10 @@ export default async function handler(
 
     artistList = Array.from(topHits).slice(0, 12);
 
+    const genreId = "0JQ5DAqbMKFMZQTf8H09UU";
     // Fetching top playlists
     const response = await axios.get(
-      "https://api.spotify.com/v1/browse/categories/toplists/playlists",
+      `https://api.spotify.com/v1/browse/categories/${genreId}/playlists`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,

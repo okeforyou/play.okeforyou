@@ -1,6 +1,11 @@
 import axios from "axios";
 
-import { GetArtists, GetHitSingles, GetTopArtists } from "../types";
+import {
+  GetArtists,
+  GetHitSingles,
+  GetTopArtists,
+  SearchPlaylists,
+} from "../types";
 import { SearchResult, VideoResponse } from "../types/invidious";
 
 export const getVideoInfo = async (videoId: string) => {
@@ -54,4 +59,16 @@ export const getArtists = async (gender: string = "1") => {
 export const getHitSingles = async () => {
   const res = await axios.get<GetHitSingles>("/api/spotify/hits");
   return res.data;
+};
+
+export const searchPlaylists = async (
+  query: string
+): Promise<SearchPlaylists> => {
+  const response = await axios.get<SearchPlaylists>(
+    "/api/spotify/search-playlist",
+    {
+      params: { query },
+    }
+  );
+  return response.data;
 };
