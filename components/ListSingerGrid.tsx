@@ -3,6 +3,7 @@ import { Fragment, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 
 import { useKaraokeState } from "../hooks/karaoke";
+import { useListSingerState } from "../hooks/listSinger";
 import { GetTopArtists, SearchPlaylists } from "../types";
 import {
   getArtists,
@@ -12,7 +13,21 @@ import {
 } from "../utils/api";
 import JooxError from "./JooxError";
 
-const GENRES = ["เพลงไทย", "ลูกทุ่ง", "เพื่อชีวิต", "ป็อป"];
+const GENRES = [
+  "เพลงไทย",
+  "ลูกทุ่ง",
+  "ลูกกรุง",
+  "เพื่อชีวิต",
+  "คันทรี",
+  "หมอลำ",
+  "อีสาน",
+  "ปักษ์ใต้",
+  "ป็อป",
+  "ป็อปร็อก",
+  "ฮาร์ดร็อก",
+  "ร็อกแอนด์โรล",
+  "ริทึมแอนด์บลูส์",
+];
 
 export default function ListSingerGrid({ showTab = true }) {
   const [topArtistsData, setTopArtistsData] = useState<GetTopArtists>({
@@ -35,20 +50,17 @@ export default function ListSingerGrid({ showTab = true }) {
     }
   );
 
-  const [tagId, setTagId] = useState("37i9dQZF1DWW1S2VXZ4bIj");
+  const { tagId, setTagId, genreText, setGenreText } = useListSingerState();
   const { data: artists, isLoading } = useQuery(
     ["getArtists", tagId],
     () => getArtists(tagId),
     {
       retry: false,
       refetchInterval: 0,
-      onError: () => {
-        setIsError(true);
-      },
+      onError: () => {},
     }
   );
 
-  const [genreText, setGenreText] = useState("เพลงฮิตไทย");
   const { isLoading: isLoadingGenre, refetch } = useQuery<
     SearchPlaylists,
     Error
@@ -206,15 +218,15 @@ export default function ListSingerGrid({ showTab = true }) {
             return (
               <div
                 key={cat.tag_id}
-                className={`text-sm aspect-square leading-6 hover:drop-shadow-xl hover:text-slate-200 tracking-wide text-white bg-slate-900 tab bg-cover bg-center bg-no-repeat ${
-                  tagId == cat.tag_id ? "tab-active" : ""
+                className={`text-sm aspect-square rounded-lg  leading-6 hover:drop-shadow-xl hover:text-slate-200 tracking-wide text-white bg-slate-900  bg-cover bg-center bg-no-repeat ${
+                  tagId == cat.tag_id ? "" : ""
                 }   
                 `}
                 onClick={() => setTagId(cat.tag_id)}
                 style={{ backgroundImage: `url('${cat.imageUrl}')` }}
               >
                 <div
-                  className="absolute  top-0 h-full w-full bg-fixed items-center"
+                  className="absolute  top-0 h-full w-full bg-fixed items-center rounded-lg"
                   style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
                 >
                   <div className="flex h-full items-center justify-center">
@@ -242,10 +254,7 @@ export default function ListSingerGrid({ showTab = true }) {
       <div className="col-span-full bg-transparent p-4 pb-2 pl-2 text-2xl">
         {(topArtistsData?.artistCategories || []).find(
           (cat) => cat.tag_id === tagId
-        )?.tag_name ||
-          (topArtistsData?.artistCategories.length > 0 &&
-            topArtistsData?.artistCategories[0].tag_name) ||
-          "เพลงฮิต"}
+        )?.tag_name || "เพลง"}
       </div>
       <div
         className={`tabs tabs-boxed col-span-full justify-center bg-transparent relative grid grid-cols-3 xl:grid-cols-5  gap-2 col-span-full p-0`}

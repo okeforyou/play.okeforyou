@@ -24,7 +24,7 @@ export default function BottomNavigation() {
         onClick={() => setActiveIndex(1)}
       >
         <MusicalNoteIcon className="w-6 h-6" />
-        <span className="btm-nav-label">ศิลปิน</span>
+        <span className="btm-nav-label">แนะนำ</span>
       </button>
       <button
         className={`text-primary  shrink ${activeIndex === 2 ? "active" : ""}`}
