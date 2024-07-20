@@ -1,10 +1,10 @@
-import Image from "next/image";
-import { Fragment } from "react";
-import { useQuery } from "react-query";
+import Image from 'next/image'
+import { Fragment } from 'react'
+import { useQuery } from 'react-query'
 
-import { useKaraokeState } from "../hooks/karaoke";
-import { RecommendedVideo, SearchResult } from "../types/invidious";
-import { getSearchResult, getSkeletonItems, getVideoInfo } from "../utils/api";
+import { useKaraokeState } from '../hooks/karaoke'
+import { RecommendedVideo, SearchResult } from '../types/invidious'
+import { getSearchResult, getSkeletonItems, getVideoInfo } from '../utils/api'
 
 export default function SearchResultGrid({
   onClick = () => {},
@@ -27,7 +27,7 @@ export default function SearchResultGrid({
     ["videoInfo", curVideoId],
     () => getVideoInfo(curVideoId),
     {
-      enabled: !!curVideoId,
+      enabled: !searchTerm.length && !!curVideoId,
       select: ({ recommendedVideos }) => {
         if (isKaraoke) {
           return recommendedVideos.filter(titleIncludesKaraoke);
@@ -51,6 +51,9 @@ export default function SearchResultGrid({
       },
     }
   );
+
+  console.log(searchLoading, infoLoading);
+
   const isLoading = searchLoading || infoLoading;
   const renderList =
     searchTerm || !recommendedVideos?.length
@@ -61,7 +64,6 @@ export default function SearchResultGrid({
     <>
       {isLoading && (
         <>
-          <div className="fixed inset-0 bg-gradient-to-t from-base-300 z-10" />
           {getSkeletonItems(16).map((s) => (
             <div
               key={s}

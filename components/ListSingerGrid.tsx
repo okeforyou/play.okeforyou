@@ -1,17 +1,19 @@
-import Image from "next/image";
-import { Fragment, useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import Image from 'next/image'
+import { Fragment, useEffect, useState } from 'react'
+import { useQuery } from 'react-query'
 
-import { useKaraokeState } from "../hooks/karaoke";
-import { useListSingerState } from "../hooks/listSinger";
-import { GetTopArtists, SearchPlaylists } from "../types";
+import { OKE_PLAYLIST } from '../const/common'
+import { useKaraokeState } from '../hooks/karaoke'
+import { useListSingerState } from '../hooks/listSinger'
+import { GetTopArtists, SearchPlaylists } from '../types'
 import {
-  getArtists,
-  getSkeletonItems,
-  getTopArtists,
-  searchPlaylists,
-} from "../utils/api";
-import JooxError from "./JooxError";
+    getArtists,
+    getSkeletonItems,
+    getTopArtists,
+    searchPlaylists,
+} from '../utils/api'
+import Chip from './Chips'
+import JooxError from './JooxError'
 
 const GENRES = [
   "เพลงไทย",
@@ -197,6 +199,14 @@ export default function ListSingerGrid({ showTab = true }) {
             </div>
           );
         })}
+
+        <Chip
+          label={OKE_PLAYLIST}
+          onClick={() => setGenreText(OKE_PLAYLIST)}
+          className={`cursor-pointer bg-black/50  hover:text-slate-200 ${
+            genreText === OKE_PLAYLIST ? "bg-primary" : ""
+          }`}
+        />
       </div>
       <div className="col-span-full  bg-transparent p-2 pl-2 text-2xl">
         เพลย์ลิสต์
@@ -206,14 +216,8 @@ export default function ListSingerGrid({ showTab = true }) {
           className={`tabs tabs-boxed col-span-full justify-center bg-transparent relative grid grid-cols-3 xl:grid-cols-5  gap-2 col-span-full p-0`}
         >
           {topArtistsData?.artistCategories.map((cat) => {
-            const names = cat.tag_name?.replace("/ ", "").split(" ");
+            const names = cat.tag_name;
 
-            const firstword = names[0] || "";
-            let lastword = "";
-            if (names.length > 1) {
-              names.shift();
-              lastword = names.join(" ");
-            }
             // Tag list
             return (
               <div
@@ -229,10 +233,8 @@ export default function ListSingerGrid({ showTab = true }) {
                   className="absolute  top-0 h-full w-full bg-fixed items-center rounded-lg"
                   style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
                 >
-                  <div className="flex h-full items-center justify-center">
-                    {firstword}
-                    <br />
-                    {lastword}
+                  <div className="flex h-full items-center justify-center text-center">
+                    {names}
                   </div>
                 </div>
               </div>

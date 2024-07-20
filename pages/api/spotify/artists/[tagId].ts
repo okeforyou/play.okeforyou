@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import axios from "axios";
+import axios from 'axios'
 
-import { getAccessToken } from "../../../../services/spotify";
+import { getAccessToken } from '../../../../services/spotify'
 
 import type { NextApiRequest, NextApiResponse } from "next";
 //https://www.joox.com/th/artists

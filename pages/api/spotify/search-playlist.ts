@@ -1,10 +1,10 @@
-import axios from "axios";
+import axios from 'axios'
 
-import { getAccessToken } from "../../../services/spotify";
-import { SearchPlaylists } from "../../../types";
+import { OKE_PLAYLIST } from '../../../const/common'
+import { getAccessToken } from '../../../services/spotify'
+import { SearchPlaylists } from '../../../types'
 
 import type { NextApiRequest, NextApiResponse } from "next";
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<SearchPlaylists | { error: string }>
@@ -16,31 +16,49 @@ export default async function handler(
     if (!query) {
       return res.status(400).json({ error: "Query parameter is required" });
     }
+    let artistCategories = [];
 
-    // Step 1: Search for playlists
-    const searchResponse = await axios.get(
-      "https://api.spotify.com/v1/search",
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        params: {
-          q: query,
-          type: "playlist",
-          // market: "TH", // Specify market if needed
-          limit: 20, // Adjust the limit as needed
-        },
-      }
-    );
+    if (OKE_PLAYLIST === query) {
+      const playlistResponse = await axios.get(
+        "https://api.spotify.com/v1/users/31dt6lomfdeam2r24mfy6chevmoe/playlists?offset=0&limit=50&locale=th",
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
 
-    // Step 2: Map the response to match PlaylistCategory format
-    const artistCategories = searchResponse.data.playlists.items.map(
-      (playlist: any, index: number) => ({
-        tag_id: playlist.id,
-        tag_name: playlist.name,
-        imageUrl: playlist.images[0]?.url || "",
-      })
-    );
+      artistCategories = playlistResponse.data.items.map(
+        (playlist: any, index: number) => ({
+          tag_id: playlist.id,
+          tag_name: playlist.name,
+          imageUrl: playlist.images[0]?.url || "",
+        })
+      );
+    } else {
+      // Step 1: Search for playlists
+      const searchResponse = await axios.get(
+        "https://api.spotify.com/v1/search",
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          params: {
+            q: query,
+            type: "playlist",
+            limit: 20,
+          },
+        }
+      );
+
+      artistCategories = searchResponse.data.playlists.items.map(
+        (playlist: any, index: number) => ({
+          tag_id: playlist.id,
+          tag_name: playlist.name,
+          imageUrl: playlist.images[0]?.url || "",
+        })
+      );
+    }
 
     const response: SearchPlaylists = {
       status: "success",
