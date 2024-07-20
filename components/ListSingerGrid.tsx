@@ -46,8 +46,11 @@ export default function ListSingerGrid({ showTab = true }) {
       onError: () => {
         setIsError(true);
       },
-      onSuccess: (data) => {
+      onSuccess: async (data) => {
         setTopArtistsData(data);
+        if (genreText !== "เพลงไทย") {
+          await refetch();
+        }
       },
     }
   );
