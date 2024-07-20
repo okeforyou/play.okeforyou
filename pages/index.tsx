@@ -265,7 +265,7 @@ function HomePage() {
                 </div>
                 {/* END Search Input */}
                 {/* START Karaoke Switch */}
-                <div className="form-control">
+                <div className="form-control w-26 lg:w-32 2xl:w-32">
                   <label className="cursor-pointer label flex-col lg:flex-row gap-1 justify-start">
                     <input
                       type="checkbox"
@@ -273,7 +273,7 @@ function HomePage() {
                       checked={isKaraoke}
                       onChange={(e) => setIsKaraoke(e.target.checked)}
                     />
-                    <span className="label-text text-primary-content ml-2 text-xs 2xl:text-xl ">
+                    <span className="label-text text-primary-content ml-2 text-xs 2xl:text-base ">
                       {isKaraoke ? "คาราโอเกะ" : "เพลง"}
                     </span>
                   </label>
