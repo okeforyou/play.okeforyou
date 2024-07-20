@@ -1,16 +1,16 @@
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router'
 
 import {
-  ArrowLeftOnRectangleIcon,
-  ArrowRightOnRectangleIcon,
-  ChatBubbleLeftIcon,
-  MusicalNoteIcon,
-  RectangleStackIcon,
-  TrophyIcon,
-} from "@heroicons/react/24/outline";
+    ArrowLeftOnRectangleIcon,
+    ArrowRightOnRectangleIcon,
+    ChatBubbleLeftIcon,
+    MusicalNoteIcon,
+    RectangleStackIcon,
+    TrophyIcon,
+} from '@heroicons/react/24/outline'
 
-import { useAuth } from "../context/AuthContext";
-import { useKaraokeState } from "../hooks/karaoke";
+import { useAuth } from '../context/AuthContext'
+import { useKaraokeState } from '../hooks/karaoke'
 
 export default function BottomNavigation() {
   const { activeIndex, setActiveIndex } = useKaraokeState();
@@ -67,7 +67,7 @@ export default function BottomNavigation() {
           title="ออกจากระบบ"
         >
           <ArrowRightOnRectangleIcon className="w-6 h-6" />
-          ออกจากระบบ
+          ออก
         </button>
       )}
     </div>

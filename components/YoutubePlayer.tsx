@@ -623,9 +623,7 @@ function YoutubePlayer({
             opts={{
               playerVars: {
                 autoplay:
-                  (isLogin || isMoniter) && playerState !== PlayerStates.PAUSED
-                    ? 1
-                    : 0,
+                  isMoniter && playerState !== PlayerStates.PAUSED ? 1 : 0,
                 controls: 0,
                 disablekb: 1,
                 enablejsapi: 1,

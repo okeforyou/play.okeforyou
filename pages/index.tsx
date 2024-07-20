@@ -265,7 +265,7 @@ function HomePage() {
                 </div>
                 {/* END Search Input */}
                 {/* START Karaoke Switch */}
-                <div className="form-control w-20 lg:w-24 2xl:w-32">
+                <div className="form-control">
                   <label className="cursor-pointer label flex-col lg:flex-row gap-1 justify-start">
                     <input
                       type="checkbox"
