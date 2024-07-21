@@ -1,36 +1,36 @@
-import Image from 'next/image'
-import { useRouter } from 'next/router'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { useFullscreen, usePromise, useToggle } from 'react-use'
-import YouTube, { YouTubePlayer, YouTubeProps } from 'react-youtube'
-import PlayerStates from 'youtube-player/dist/constants/PlayerStates'
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useFullscreen, usePromise, useToggle } from "react-use";
+import YouTube, { YouTubePlayer, YouTubeProps } from "react-youtube";
+import PlayerStates from "youtube-player/dist/constants/PlayerStates";
 
 import {
-    ArrowUturnLeftIcon,
-    ForwardIcon,
-    PauseIcon,
-    PlayIcon,
-    SpeakerWaveIcon,
-    SpeakerXMarkIcon,
-} from '@heroicons/react/20/solid'
+  ArrowUturnLeftIcon,
+  ForwardIcon,
+  PauseIcon,
+  PlayIcon,
+  SpeakerWaveIcon,
+  SpeakerXMarkIcon,
+} from "@heroicons/react/20/solid";
 import {
-    ArrowsPointingInIcon,
-    ArrowsPointingOutIcon,
-    ExclamationTriangleIcon,
-    TvIcon,
-} from '@heroicons/react/24/outline'
-import { ArrowPathIcon } from '@heroicons/react/24/solid'
+  ArrowsPointingInIcon,
+  ArrowsPointingOutIcon,
+  ExclamationTriangleIcon,
+  TvIcon,
+} from "@heroicons/react/24/outline";
+import { ArrowPathIcon } from "@heroicons/react/24/solid";
 
-import { useAuth } from '../context/AuthContext'
-import { useToast } from '../context/ToastContext'
-import useIsMobile from '../hooks/isMobile'
-import { useKaraokeState } from '../hooks/karaoke'
-import { useRoomState } from '../hooks/room'
-import { ACTION, SocketData } from '../types/socket'
-import { joinRoom, leaveRoom, socket } from '../utils/socket'
-import Alert, { AlertHandler } from './Alert'
-import BottomAds from './BottomAds'
-import VideoAds from './VideoAds'
+import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
+import useIsMobile from "../hooks/isMobile";
+import { useKaraokeState } from "../hooks/karaoke";
+import { useRoomState } from "../hooks/room";
+import { ACTION, SocketData } from "../types/socket";
+import { joinRoom, leaveRoom, socket } from "../utils/socket";
+import Alert, { AlertHandler } from "./Alert";
+import BottomAds from "./BottomAds";
+import VideoAds from "./VideoAds";
 
 function YoutubePlayer({
   videoId,
@@ -623,7 +623,7 @@ function YoutubePlayer({
             opts={{
               playerVars: {
                 autoplay:
-                  isMoniter && playerState !== PlayerStates.PAUSED ? 1 : 0,
+                  isMoniter && playerState === PlayerStates.PAUSED ? 0 : 1,
                 controls: 0,
                 disablekb: 1,
                 enablejsapi: 1,

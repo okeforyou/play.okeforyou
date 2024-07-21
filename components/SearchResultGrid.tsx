@@ -1,10 +1,10 @@
-import Image from 'next/image'
-import { Fragment } from 'react'
-import { useQuery } from 'react-query'
+import Image from "next/image";
+import { Fragment, useEffect, useRef } from "react";
+import { useQuery } from "react-query";
 
-import { useKaraokeState } from '../hooks/karaoke'
-import { RecommendedVideo, SearchResult } from '../types/invidious'
-import { getSearchResult, getSkeletonItems, getVideoInfo } from '../utils/api'
+import { useKaraokeState } from "../hooks/karaoke";
+import { RecommendedVideo, SearchResult } from "../types/invidious";
+import { getSearchResult, getSkeletonItems, getVideoInfo } from "../utils/api";
 
 export default function SearchResultGrid({
   onClick = () => {},
@@ -13,6 +13,12 @@ export default function SearchResultGrid({
 }) {
   const { searchTerm, curVideoId, isKaraoke } = useKaraokeState();
   const prefix = isKaraoke ? '"karaoke" ' : "";
+
+  const divRef = useRef(null);
+
+  const handleDivScroll = () => {
+    divRef.current?.scrollIntoView();
+  };
 
   const titleIncludesKaraoke = ({ title }) => {
     const lcTitle = title.toLowerCase();
@@ -52,13 +58,15 @@ export default function SearchResultGrid({
     }
   );
 
-  console.log(searchLoading, infoLoading);
-
   const isLoading = searchLoading || infoLoading;
   const renderList =
     searchTerm || !recommendedVideos?.length
       ? searchResults
       : recommendedVideos;
+
+  useEffect(() => {
+    handleDivScroll();
+  }, [renderList]);
 
   return (
     <>
@@ -72,12 +80,19 @@ export default function SearchResultGrid({
           ))}
         </>
       )}
-      {renderList?.map((rcm) => {
+      {renderList?.map((rcm, i) => {
         return !rcm ? null : (
           <Fragment key={rcm.videoId}>
             {/* The button to open modal */}
             <label htmlFor="modal-video" onClick={() => onClick(rcm)}>
-              <div className="card overflow-hidden bg-white shadow hover:shadow-md cursor-pointer flex-auto">
+              <div
+                ref={(ref) => {
+                  if (i === 0) {
+                    divRef.current = ref;
+                  }
+                }}
+                className="card overflow-hidden bg-white shadow hover:shadow-md cursor-pointer flex-auto"
+              >
                 <figure className="relative w-full aspect-video">
                   <Image
                     unoptimized

@@ -112,8 +112,7 @@ const VideoAds: React.FC = () => {
                 }}
               >
                 <div
-                  className="text-2xl bg-white cursor-pointer  
-            rounded-full  text-center absolute drop-shadow-md p-2 px-4"
+                  className="text-2xl bg-white cursor-pointer rounded-full  text-center absolute drop-shadow-md p-2 px-4"
                   onClick={(e) => {
                     setShowAd(false);
                   }}

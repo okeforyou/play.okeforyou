@@ -38,7 +38,7 @@ export default function VideoHorizontalCard({
         </figure>
 
         <div className="col-span-2 flex flex-col p-[1vw] overflow-hidden gap-2">
-          <h2 className="font-semibold text-sm 2xl:text-2xl line-clamp-2">
+          <h2 className="font-semibold text-xs 2xl:text-xl line-clamp-2">
             {video?.title}
           </h2>
           <p className="text-xs 2xl:text-xl truncate">{video?.author}</p>

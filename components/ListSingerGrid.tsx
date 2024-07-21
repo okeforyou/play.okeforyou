@@ -1,19 +1,19 @@
-import Image from 'next/image'
-import { Fragment, useEffect, useState } from 'react'
-import { useQuery } from 'react-query'
+import Image from "next/image";
+import { Fragment, useEffect, useRef, useState } from "react";
+import { useQuery } from "react-query";
 
-import { OKE_PLAYLIST } from '../const/common'
-import { useKaraokeState } from '../hooks/karaoke'
-import { useListSingerState } from '../hooks/listSinger'
-import { GetTopArtists, SearchPlaylists } from '../types'
+import { OKE_PLAYLIST } from "../const/common";
+import { useKaraokeState } from "../hooks/karaoke";
+import { useListSingerState } from "../hooks/listSinger";
+import { GetTopArtists, SearchPlaylists } from "../types";
 import {
-    getArtists,
-    getSkeletonItems,
-    getTopArtists,
-    searchPlaylists,
-} from '../utils/api'
-import Chip from './Chips'
-import JooxError from './JooxError'
+  getArtists,
+  getSkeletonItems,
+  getTopArtists,
+  searchPlaylists,
+} from "../utils/api";
+import Chip from "./Chips";
+import JooxError from "./JooxError";
 
 const GENRES = [
   "เพลงไทย",
@@ -36,6 +36,17 @@ export default function ListSingerGrid({ showTab = true }) {
     artistCategories: [],
     artist: [],
   } as GetTopArtists);
+
+  const playlistRef = useRef(null);
+  const songlistRef = useRef(null);
+
+  const handlePlaylistScroll = () => {
+    playlistRef.current.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleSongScroll = () => {
+    songlistRef.current.scrollIntoView({ behavior: "smooth" });
+  };
 
   const { data: tempTopArtistsData, isLoading: isLoadTopArtists } = useQuery(
     ["getTopArtists"],
@@ -95,6 +106,11 @@ export default function ListSingerGrid({ showTab = true }) {
   const { artist } = artists || {};
   const { setActiveIndex } = useKaraokeState();
   const [isError, setIsError] = useState(false);
+
+  const handleGenre = (genreText: string) => {
+    setGenreText(genreText);
+    handlePlaylistScroll();
+  };
 
   return isError ? (
     <JooxError />
@@ -186,7 +202,7 @@ export default function ListSingerGrid({ showTab = true }) {
                 genreText == gen ? "tab-active" : ""
               }   
                 `}
-              onClick={() => setGenreText(gen)}
+              onClick={() => handleGenre(gen)}
               style={{ borderRadius: "9999px" }}
             >
               <div
@@ -205,13 +221,16 @@ export default function ListSingerGrid({ showTab = true }) {
 
         <Chip
           label={OKE_PLAYLIST}
-          onClick={() => setGenreText(OKE_PLAYLIST)}
+          onClick={() => handleGenre(OKE_PLAYLIST)}
           className={`cursor-pointer bg-black/50  hover:text-slate-200 ${
             genreText === OKE_PLAYLIST ? "bg-primary" : ""
           }`}
         />
       </div>
-      <div className="col-span-full  bg-transparent p-2 pl-2 text-2xl">
+      <div
+        ref={playlistRef}
+        className="col-span-full  bg-transparent p-2 pl-2 text-2xl"
+      >
         เพลย์ลิสต์
       </div>
       {!isLoadTopArtists && (
@@ -229,7 +248,11 @@ export default function ListSingerGrid({ showTab = true }) {
                   tagId == cat.tag_id ? "" : ""
                 }   
                 `}
-                onClick={() => setTagId(cat.tag_id)}
+                onClick={() => {
+                  setTagId(cat.tag_id);
+
+                  handleSongScroll();
+                }}
                 style={{ backgroundImage: `url('${cat.imageUrl}')` }}
               >
                 <div
@@ -256,7 +279,10 @@ export default function ListSingerGrid({ showTab = true }) {
           ))}
         </>
       )}
-      <div className="col-span-full bg-transparent p-4 pb-2 pl-2 text-2xl">
+      <div
+        ref={songlistRef}
+        className="col-span-full bg-transparent p-4 pb-2 pl-2 text-2xl"
+      >
         {(topArtistsData?.artistCategories || []).find(
           (cat) => cat.tag_id === tagId
         )?.tag_name || "เพลง"}
