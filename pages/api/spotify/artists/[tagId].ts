@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import axios from 'axios'
+import axios from "axios";
 
-import { getAccessToken } from '../../../../services/spotify'
+import { getAccessToken } from "../../../../services/spotify";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 //https://www.joox.com/th/artists
@@ -31,10 +31,12 @@ export default async function handler(
 
     const artists = {
       status: "success",
-      artist: tracks.map((a) => ({
-        name: a.track.name,
-        imageUrl: a.track.album.images[0].url,
-      })),
+      artist: tracks
+        .filter((a) => !!a.track)
+        .map((a) => ({
+          name: a.track?.name,
+          imageUrl: a.track?.album?.images[0].url,
+        })),
     };
 
     res.status(200).json(artists);
