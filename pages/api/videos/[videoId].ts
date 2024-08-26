@@ -5,7 +5,7 @@ export default async function handler(req, res) {
 
   try {
     const response = await axios.get(
-      `https://invidious.fdn.fr/api/v1/videos/${videoId}`,
+      `http://iv.ggtyler.dev/api/v1/videos/${videoId}`,
       {
         params: {
           fields: "recommendedVideos",
