@@ -3,7 +3,7 @@ import axios from "axios";
 export default async function handler(req, res) {
   const { q, type, page, region, fields } = req.query;
   try {
-    const response = await axios.get(`http://iv.ggtyler.dev/api/v1/search`, {
+    const response = await axios.get(`https://iv.ggtyler.dev/api/v1/search`, {
       params: { q, type, page, region, fields },
       headers: {
         "Access-Control-Allow-Origin": "*",
