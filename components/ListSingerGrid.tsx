@@ -143,9 +143,9 @@ export default function ListSingerGrid({ showTab = true }) {
         {isLoadTopArtists && (
           <>
             <div className="absolute inset-0 bg-gradient-to-t from-base-300 z-10" />
-            {getSkeletonItems(16).map((s) => (
+            {getSkeletonItems(16).map((s, i) => (
               <div
-                key={s}
+                key={s + i}
                 className="card bg-gray-300 animate-pulse w-full aspect-w-1 aspect-h-1"
               ></div>
             ))}

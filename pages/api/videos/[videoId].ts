@@ -5,7 +5,7 @@ export default async function handler(req, res) {
 
   try {
     const response = await axios.get(
-      `https://iv.ggtyler.dev/api/v1/videos/${videoId}`,
+      `https://${process.env.NEXT_PUBLIC_INVIDIOUS_URL}/api/v1/videos/${videoId}`,
       {
         params: {
           fields: "recommendedVideos",
