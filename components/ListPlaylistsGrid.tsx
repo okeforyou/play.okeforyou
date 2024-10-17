@@ -1,40 +1,40 @@
 import {
-    addDoc,
-    arrayRemove,
-    collection,
-    deleteDoc,
-    doc,
-    getDocs,
-    increment,
-    limit,
-    orderBy,
-    query,
-    updateDoc,
-    where,
-} from 'firebase/firestore'
-import Image from 'next/image'
-import { Fragment, useEffect, useRef, useState } from 'react'
+  addDoc,
+  arrayRemove,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  increment,
+  limit,
+  orderBy,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import Image from "next/image";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 import {
-    PencilIcon,
-    PlusIcon,
-    RectangleStackIcon,
-    TrashIcon,
-} from '@heroicons/react/24/outline'
+  PencilIcon,
+  PlusIcon,
+  RectangleStackIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import {
-    EllipsisVerticalIcon,
-    HandThumbUpIcon,
-    LockClosedIcon,
-    PlayIcon,
-} from '@heroicons/react/24/solid'
+  EllipsisVerticalIcon,
+  HandThumbUpIcon,
+  LockClosedIcon,
+  PlayIcon,
+} from "@heroicons/react/24/solid";
 
-import { useAuth } from '../context/AuthContext'
-import { database } from '../firebase'
-import { useKaraokeState } from '../hooks/karaoke'
-import { useMyPlaylistState } from '../hooks/myPlaylist'
-import { getSkeletonItems } from '../utils/api'
-import Alert, { AlertHandler } from './Alert'
-import Modal, { ModalHandler } from './Modal'
+import { useAuth } from "../context/AuthContext";
+import { database } from "../firebase";
+import { useKaraokeState } from "../hooks/karaoke";
+import { useMyPlaylistState } from "../hooks/myPlaylist";
+import { getSkeletonItems } from "../utils/api";
+import Alert, { AlertHandler } from "./Alert";
+import Modal, { ModalHandler } from "./Modal";
 
 const playlistsRef = collection(database, "playlists");
 enum MODE {
@@ -507,7 +507,7 @@ export default function ListPlaylistsGrid() {
                     <figure className="relative aspect-video">
                       <Image
                         unoptimized
-                        src={`https://invidious.io.lol/vi/${video?.videoId}/mqdefault.jpg`}
+                        src={`https://invidious.perennialte.ch/vi/${video?.videoId}/mqdefault.jpg`}
                         priority
                         alt={video?.title}
                         layout="fill"

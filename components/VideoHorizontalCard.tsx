@@ -29,7 +29,7 @@ export default function VideoHorizontalCard({
         <figure className="relative w-full aspect-video">
           <Image
             unoptimized
-            src={`https://invidious.io.lol/vi/${video?.videoId}/mqdefault.jpg`}
+            src={`https://invidious.perennialte.ch/vi/${video?.videoId}/mqdefault.jpg`}
             priority
             alt={video?.title}
             layout="fill"
