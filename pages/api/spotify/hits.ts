@@ -11,42 +11,43 @@ export default async function handler(
   const accessToken = await getAccessToken();
 
   try {
-    const response = await axios.get(
-      "https://api.spotify.com/v1/browse/categories/toplists/playlists",
+    //   const response = await axios.get(
+    //     "https://api.spotify.com/v1/browse/categories/toplists/playlists",
+    //     {
+    //       headers: {
+    //         Authorization: `Bearer ${accessToken}`,
+    //       },
+    //       params: {
+    //         country: "TH", // Thailand
+    //       },
+    //     }
+    //   );
+
+    //   const playlists = response.data.playlists.items;
+    //   console.log(playlists);
+    const playlistId = "4suF7ikvuAdTpcC2m4ZEjz";
+
+    const topHits: Single[] = [];
+
+    const playlistResponse = await axios.get(
+      `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-        params: {
-          country: "TH", // Thailand
-        },
       }
     );
 
-    const playlists = response.data.playlists.items;
+    const tracks = playlistResponse.data.items;
 
-    const topHits: Single[] = [];
-    if (playlists.length > 0) {
-      const playlistResponse = await axios.get(
-        `https://api.spotify.com/v1/playlists/${playlists[0].id}/tracks`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+    for (const item of tracks) {
+      const track = item.track;
 
-      const tracks = playlistResponse.data.items;
-
-      for (const item of tracks) {
-        const track = item.track;
-
-        topHits.push({
-          title: track.name,
-          artist_name: track.artists[0].name,
-          coverImageURL: track.album.images[0]?.url || "",
-        });
-      }
+      topHits.push({
+        title: track.name,
+        artist_name: track.artists[0].name,
+        coverImageURL: track.album.images[0]?.url || "",
+      });
     }
 
     const topics = {
@@ -56,6 +57,8 @@ export default async function handler(
 
     res.status(200).json(topics);
   } catch (error) {
+    // console.log(error);
+
     res.status(500).json({ error: error.message });
   }
 }
