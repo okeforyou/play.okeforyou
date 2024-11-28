@@ -13,7 +13,7 @@ export default async function handler(
     let artistList: Artist[] = [];
     let artistCategories: ArtistCategory[] = [];
 
-    const playlistId = "37i9dQZF1DXdzw50tzi795";
+    const playlistId = "4suF7ikvuAdTpcC2m4ZEjz";
 
     // Fetching the specific playlist by ID
     const playlistResponse = await axios.get(
@@ -39,34 +39,6 @@ export default async function handler(
     }
 
     artistList = Array.from(topHits).slice(0, 12);
-
-    const genreId = "0JQ5DAqbMKFMZQTf8H09UU";
-    // Fetching top playlists
-    const response = await axios.get(
-      `https://api.spotify.com/v1/browse/categories/${genreId}/playlists`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        params: {
-          country: "TH", // Thailand
-        },
-      }
-    );
-
-    const playlists = response.data.playlists.items;
-
-    for (let i = 0; i < playlists.length; i++) {
-      const genre = playlists[i];
-
-      if (genre) {
-        artistCategories.push({
-          tag_id: genre.id,
-          tag_name: genre.name,
-          imageUrl: genre.images[0]?.url || "",
-        });
-      }
-    }
 
     const artists: GetTopArtists = {
       status: "success",

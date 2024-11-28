@@ -1,8 +1,8 @@
-import axios from 'axios'
+import axios from "axios";
 
-import { OKE_PLAYLIST } from '../../../const/common'
-import { getAccessToken } from '../../../services/spotify'
-import { SearchPlaylists } from '../../../types'
+import { OKE_PLAYLIST } from "../../../const/common";
+import { getAccessToken } from "../../../services/spotify";
+import { SearchPlaylists } from "../../../types";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 export default async function handler(
@@ -28,13 +28,13 @@ export default async function handler(
         }
       );
 
-      artistCategories = playlistResponse.data.items.map(
-        (playlist: any, index: number) => ({
+      artistCategories = playlistResponse.data.items
+        .filter((item) => !!item)
+        .map((playlist: any, index: number) => ({
           tag_id: playlist.id,
           tag_name: playlist.name,
           imageUrl: playlist.images[0]?.url || "",
-        })
-      );
+        }));
     } else {
       // Step 1: Search for playlists
       const searchResponse = await axios.get(
@@ -51,13 +51,13 @@ export default async function handler(
         }
       );
 
-      artistCategories = searchResponse.data.playlists.items.map(
-        (playlist: any, index: number) => ({
+      artistCategories = searchResponse.data.playlists.items
+        .filter((item) => !!item)
+        .map((playlist: any, index: number) => ({
           tag_id: playlist.id,
           tag_name: playlist.name,
           imageUrl: playlist.images[0]?.url || "",
-        })
-      );
+        }));
     }
 
     const response: SearchPlaylists = {
