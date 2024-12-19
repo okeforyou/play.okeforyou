@@ -13,7 +13,7 @@ export default async function handler(
     let artistList: Artist[] = [];
     let artistCategories: ArtistCategory[] = [];
 
-    const playlistId = "4suF7ikvuAdTpcC2m4ZEjz";
+    const playlistId = "4jn7rUR7AyqLFnAnHkkbfg";
 
     // Fetching the specific playlist by ID
     const playlistResponse = await axios.get(

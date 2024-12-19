@@ -25,7 +25,7 @@ export default async function handler(
 
     //   const playlists = response.data.playlists.items;
     //   console.log(playlists);
-    const playlistId = "4suF7ikvuAdTpcC2m4ZEjz";
+    const playlistId = "4jn7rUR7AyqLFnAnHkkbfg";
 
     const topHits: Single[] = [];
 
