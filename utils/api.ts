@@ -9,8 +9,11 @@ import {
 import { SearchResult, VideoResponse } from "../types/invidious";
 
 export const getVideoInfo = async (videoId: string) => {
-  const res = await axios.get<VideoResponse>("/api/videos/" + videoId);
-  return res.data;
+  // const res = await axios.get<VideoResponse>("/api/videos/" + videoId);
+  // return res.data;
+  return {
+    recommendedVideos: [],
+  };
 };
 
 export const getSearchResult = async ({

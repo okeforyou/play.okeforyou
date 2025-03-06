@@ -96,7 +96,7 @@ export default function SearchResultGrid({
                 <figure className="relative w-full aspect-video">
                   <Image
                     unoptimized
-                    src={`https://invidious.perennialte.ch/vi/${rcm.videoId}/mqdefault.jpg`}
+                    src={`${process.env.NEXT_PUBLIC_INVIDIOUS_URL}vi/${rcm.videoId}/mqdefault.jpg`}
                     priority
                     alt={rcm.title}
                     layout="fill"

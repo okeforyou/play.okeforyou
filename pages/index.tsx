@@ -257,7 +257,7 @@ function HomePage() {
                       placeholder="ค้นหาเพลง"
                       className="input w-full appearance-none rounded-l xl:text-xl"
                       value={searchTerm}
-                      debounceTimeout={1000}
+                      debounceTimeout={2000}
                       onChange={(ev) => setSearchTerm(ev.target.value)}
                       inputMode="search"
                     />
@@ -354,7 +354,7 @@ function HomePage() {
                     <figure className="relative w-full aspect-video">
                       <Image
                         unoptimized
-                        src={`https://invidious.perennialte.ch/vi/${selectedVideo?.videoId}/mqdefault.jpg`}
+                        src={`${process.env.NEXT_PUBLIC_INVIDIOUS_URL}vi/${selectedVideo?.videoId}/mqdefault.jpg`}
                         priority
                         alt={selectedVideo?.title}
                         layout="fill"
