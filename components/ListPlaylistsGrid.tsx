@@ -320,7 +320,7 @@ export default function ListPlaylistsGrid() {
               unoptimized
               src={
                 item?.playlists?.length
-                  ? item.playlists[0]["videoThumbnails"][0].url
+                  ? `${process.env.NEXT_PUBLIC_INVIDIOUS_URL}vi/${item.playlists[0]?.videoId}/mqdefault.jpg` // item.playlists[0]["videoThumbnails"][0].url
                   : "/icon-cover.png"
               }
               priority
