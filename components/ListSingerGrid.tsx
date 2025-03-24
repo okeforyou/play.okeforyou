@@ -151,9 +151,9 @@ export default function ListSingerGrid({ showTab = true }) {
             ))}
           </>
         )}
-        {topArtists?.map((artist) => {
+        {topArtists?.map((artist, i) => {
           return (
-            <Fragment key={artist.name}>
+            <Fragment key={artist.name + i}>
               <div
                 className="overflow-hidden bg-transparent cursor-pointer flex-auto"
                 onClick={() => {
@@ -290,9 +290,9 @@ export default function ListSingerGrid({ showTab = true }) {
       <div
         className={`tabs tabs-boxed col-span-full justify-center bg-transparent relative grid grid-cols-3 xl:grid-cols-5  gap-2 col-span-full p-0`}
       >
-        {artist?.map((artist) => {
+        {artist?.map((artist, i) => {
           return (
-            <Fragment key={artist.name}>
+            <Fragment key={artist.name + i}>
               <div
                 className="card overflow-hidden bg-white shadow hover:shadow-md cursor-pointer flex-auto rounded-lg"
                 onClick={() => {
